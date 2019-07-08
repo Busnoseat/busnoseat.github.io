@@ -1,0 +1,885 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="java_多线程," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="多线程并发情况下需要考虑线程安全问题，一般用锁来确保核心代码只有单个线程能运行。长用的有synchronized、ReentrantLock、ReadWriteLock，这些内部实现都依赖于AbstractQueuedSynchronizer类。
+大致流程
+线程尝试获取锁，如果获取到，线程状态保持RUNNING,程序按照业务流程走下去
+如果获取失败,说明已经有其他线程获取锁了,将此线程加入到等待">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AQS相关">
+<meta property="og:url" content="http://yoursite.com/2017/06/28/AQS相关/index.html">
+<meta property="og:site_name" content="学习是件开心事">
+<meta property="og:description" content="多线程并发情况下需要考虑线程安全问题，一般用锁来确保核心代码只有单个线程能运行。长用的有synchronized、ReentrantLock、ReadWriteLock，这些内部实现都依赖于AbstractQueuedSynchronizer类。
+大致流程
+线程尝试获取锁，如果获取到，线程状态保持RUNNING,程序按照业务流程走下去
+如果获取失败,说明已经有其他线程获取锁了,将此线程加入到等待">
+<meta property="og:image" content="http://yoursite.com/asset/article/20170628/20170628001.jpg">
+<meta property="og:image" content="http://yoursite.com/asset/article/20170628/20170628002.png">
+<meta property="og:updated_time" content="2019-07-08T08:55:59.975Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AQS相关">
+<meta name="twitter:description" content="多线程并发情况下需要考虑线程安全问题，一般用锁来确保核心代码只有单个线程能运行。长用的有synchronized、ReentrantLock、ReadWriteLock，这些内部实现都依赖于AbstractQueuedSynchronizer类。
+大致流程
+线程尝试获取锁，如果获取到，线程状态保持RUNNING,程序按照业务流程走下去
+如果获取失败,说明已经有其他线程获取锁了,将此线程加入到等待">
+<meta name="twitter:image" content="http://yoursite.com/asset/article/20170628/20170628001.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/06/28/AQS相关/"/>
+
+
+
+
+
+  <title> AQS相关 | 学习是件开心事 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">学习是件开心事</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/28/AQS相关/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Mr. Xu">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/asset/blogImg/blogUser.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="学习是件开心事">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="学习是件开心事" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                AQS相关
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-06-28T11:27:29+08:00">
+                2017-06-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p> 多线程并发情况下需要考虑线程安全问题，一般用锁来确保核心代码只有单个线程能运行。长用的有synchronized、ReentrantLock、ReadWriteLock，这些内部实现都依赖于AbstractQueuedSynchronizer类。</p>
+<h1 id="大致流程"><a href="#大致流程" class="headerlink" title="大致流程"></a>大致流程</h1><ol>
+<li>线程尝试获取锁，如果获取到，线程状态保持RUNNING,程序按照业务流程走下去</li>
+<li>如果获取失败,说明已经有其他线程获取锁了,将此线程加入到等待队列中，并将该线程挂起</li>
+<li>线程尝试释放锁，并将等待队列中的线程唤醒‘</li>
+</ol>
+<a id="more"></a>
+<h1 id="ReentrantLock"><a href="#ReentrantLock" class="headerlink" title="ReentrantLock"></a>ReentrantLock</h1> <pre><code>
+public class ReentrantLock implements Lock, java.io.Serializable {
+    private final Sync sync;
+    abstract static class Sync extends AbstractQueuedSynchronizer {
+        abstract void lock();
+        final boolean nonfairTryAcquire(int acquires) {... }
+    //默认非公平锁
+    public ReentrantLock() {
+        sync = new NonfairSync();
+    }
+
+    //fair为true时，采用公平锁策略
+    public ReentrantLock(boolean fair) {    
+        sync = fair ? new FairSync() : new NonfairSync();
+    }
+    public void lock() {
+        sync.lock();
+    }
+    public void unlock() {    sync.release(1);}
+    public Condition newCondition() {    
+        return sync.newCondition();
+    }
+    ...
+}
+ </code></pre> 
+
+<p> ReentrantLock里Sync继承自AQS，NonfairSynch和FairSync又继承Sync,所以公平锁和非公平锁都是AQS的实现类，主要实现AQS的tryAcquire()方法（尝试获取锁）。默认非公平锁。</p>
+ <pre><code>
+     static final class NonfairSync extends Sync {
+         final void lock() {
+             //尝试获取锁 ，将AQS的state从0变为1  state:成功获取锁并运行的线程总共获取了锁的次数  
+             //获取成功 将本线程记录 
+        if (compareAndSetState(0, 1))
+            setExclusiveOwnerThread(Thread.currentThread());
+        else
+            //获取失败 直接调用AQS的acquire()方法 来进行线程入队操作
+            acquire(1);
+    }
+}
+
+
+    static final class FairSync extends Sync {
+        final void lock() {
+            // 公平锁直接调用 
+            acquire(1);
+        }
+ </code></pre>
+ 非公平锁中每次新线程执行lock方法的时候会先尝试获取锁，都会和等待队列中的首发线程一起争取锁，不排队是如此的不公平。公平锁直接调用AQS的acquire()方法。acquire方法里tryAcquire方法还是委托给子类实现
+
+
+
+<pre><code>
+
+   static final class NonfairSync extends Sync {
+        protected final boolean tryAcquire(int acquires) {
+            return nonfairTryAcquire(acquires);
+        }
+
+        final boolean nonfairTryAcquire(int acquires) {
+            final Thread current = Thread.currentThread();
+            int c = getState();
+            // 0个线程持锁 再次尝试获取锁 体现不公平
+            if (c == 0) {
+                if (compareAndSetState(0, acquires)) {
+                    setExclusiveOwnerThread(current);
+                    return true;
+                }
+            }
+            // >=1 个持锁线程 这种是重入锁 state自增1  线程正常运行 不挂起 
+            else if (current == getExclusiveOwnerThread()) {
+                int nextc = c + acquires;
+                if (nextc < 0) // overflow
+                    throw new Error("Maximum lock count exceeded");
+                setState(nextc);
+                return true;
+            }
+            return false;
+        }
+        }
+
+
+     static final class FairSync extends Sync {
+           protected final boolean tryAcquire(int acquires) {
+            final Thread current = Thread.currentThread();
+            int c = getState();
+             // 0个线程持锁 并且没有线程再等待队列里排队 才可以尝试获取锁 很礼貌 很公平 
+            if (c == 0) {
+                if (!hasQueuedPredecessors() &&
+                    compareAndSetState(0, acquires)) {
+                    setExclusiveOwnerThread(current);
+                    return true;
+                }
+            }
+            // >=1 个持锁线程 这种是重入锁 state自增1  线程正常运行 不挂起 
+            else if (current == getExclusiveOwnerThread()) {
+                int nextc = c + acquires;
+                if (nextc < 0)
+                    throw new Error("Maximum lock count exceeded");
+                setState(nextc);
+                return true;
+            }
+            return false;
+        }
+        }
+</code></pre>
+重入锁，即线程可以重复获取已经持有的锁。在非公平和公平锁中，都对重入锁进行了实现，一般用于递归获取锁的情况。
+没有重入锁的时候 AQS的state是1 表明获取了该线程总共获取了一次，多次获取锁，state每次需要自增
+
+
+# AQS (AbstractQueuedSynchronizer)
+
+<pre><code>
+    public abstract class AbstractQueuedSynchronizer extends
+    AbstractOwnableSynchronizer implements java.io.Serializable { 
+    //等待队列的头节点
+    private transient volatile Node head;
+    //等待队列的尾节点
+    private transient volatile Node tail;
+    //持有锁的线程数  0代表没有线程持有锁  1代表一个线程持有锁  >1代表该线程重复获取锁（重入锁）
+    private volatile int state;
+    protected final int getState() { return state;}
+    protected final void setState(int newState) { state = newState;}
+    ...
+
+    static final class Node {
+        static final Node SHARED = new Node();
+        static final Node EXCLUSIVE = null;
+        static final int CANCELLED =  1;
+        static final int SIGNAL    = -1;
+        static final int CONDITION = -2;
+        static final int PROPAGATE = -3;
+        volatile int waitStatus;
+        volatile Node prev;
+        volatile Node next;
+        volatile Thread thread;
+        Node nextWaiter;
+        ...
+    }
+
+}
+</code></pre>
+
+<p>AQS是用来建锁或其他同步组件的基础框架，上图列举了些重要变量。通过内置的FIFO队列Node来完成资源获取线程的排队工作</p>
+<h2 id="node介绍以及node入队三步骤"><a href="#node介绍以及node入队三步骤" class="headerlink" title="node介绍以及node入队三步骤"></a>node介绍以及node入队三步骤</h2><p><img src="/asset/article/20170628/20170628001.jpg" alt="Image text"><br>AQS的head指向node队列中的头结点，tail指向node队列中的尾节点，队列和队列之间通过prev和next来互相关联，形成类似蝴蝶扣的连接。如若新增节点</p>
+<ol>
+<li>将新节点的prev指向原尾节点</li>
+<li>将原尾节点的next指向新节点 形成蝴蝶扣</li>
+<li>将AQS的tail指向新节点</li>
+</ol>
+<p>需要额外注意的是 :头结点node1永远是个空节点（thread==null），头结点就是正在运行的线程。如果一个线程的prev是head头结点，说明头结点已经正在运行，可能执行结束，该线程可以再次尝试获取锁。如果获取成功，自己获取锁可以执行了，同时head后移指向自己，并把该节点node<br>的thread置为null<br> <pre><code><br>       public final void acquire(int arg) {<br>          //step1: 尝试获取锁 委托子类完成<br>          //step2: 获取锁失败，需要将该线程打包成一个node节点<br>          //step3：将新打包的节点加到队列中<br>          //step4: 入队成功后  挂起线程<br>          //step5：挂起的线程被唤醒后 返回线程挂起已被中断标志<br>        if (!tryAcquire(arg) &amp;&amp;<br>            acquireQueued(addWaiter(Node.EXCLUSIVE), arg))<br>            selfInterrupt();<br>      }<br> </code></pre></p>
+<h2 id="addWaiter方法将线程打包成新节点"><a href="#addWaiter方法将线程打包成新节点" class="headerlink" title="addWaiter方法将线程打包成新节点"></a>addWaiter方法将线程打包成新节点</h2>  <pre><code>
+        //上步骤中传进来的Node.EXCLUSIVE为null
+          private Node addWaiter(Node mode) {
+          //新建一个新节点node 并初始化thread为当前线程
+        Node node = new Node(Thread.currentThread(), mode);
+        Node pred = tail;
+        if (pred != null) {
+        //如果存在尾节点 说明有队列 就需要新节点入队三步骤 并返回新节点
+            node.prev = pred;
+            if (compareAndSetTail(pred, node)) {
+                pred.next = node;
+                return node;
+            }
+        }
+        //如果不存在尾节点
+        enq(node);
+        return node;
+    }
+
+
+     private Node enq(final Node node) {
+        for (;;) {
+            Node t = tail;
+            if (t == null) { 
+                //不存在尾节点 新建一个node并设置为头节点,尾节点  所以predecessor队列中的头结点head其实是一个空节点
+                if (compareAndSetHead(new Node()))
+                    tail = head;
+            } else {
+                //有了尾节点再把新节点入队三步骤
+                node.prev = t;
+                if (compareAndSetTail(t, node)) {
+                    t.next = node;
+                    return t;
+                }
+            }
+        }
+    }
+    </code></pre>
+
+
+<h2 id="acquireQueued方法-将新节点入队"><a href="#acquireQueued方法-将新节点入队" class="headerlink" title="acquireQueued方法 将新节点入队"></a>acquireQueued方法 将新节点入队</h2><pre><code>
+        final boolean acquireQueued(final Node node, int arg) {
+        boolean failed = true;
+        try {
+            boolean interrupted = false;
+            for (;;) {
+                //在入队前  都要核实下是否还需要挂起线程  如果前节点为head就可以直接再次尝试获取锁
+                final Node p = node.predecessor();
+                if (p == head && tryAcquire(arg)) {
+                    //如果获取成功 头结点已经运行结束 head后移指向该线程 并把该线程的thread置为null （该线程是头结点表明正在运行的线程）
+                    setHead(node);
+                    p.next = null; // help GC
+                    failed = false;
+                    return interrupted;
+                }
+                //还是获取失败 就需要挂起线程了
+                if (shouldParkAfterFailedAcquire(p, node) &&
+                    parkAndCheckInterrupt())
+                    interrupted = true;
+            }
+        } finally {
+            if (failed)
+                cancelAcquire(node);
+        }
+    }
+
+      private static boolean shouldParkAfterFailedAcquire(Node pred, Node node) {
+        int ws = pred.waitStatus;
+        //只有当前任线程状态为signal的时候才可以挂起线程
+        if (ws == Node.SIGNAL)  
+            return true;
+        if (ws > 0) {
+        //如果前任线程状态为已取消 将前任的前任和新节点组成蝴蝶扣
+            do {
+                node.prev = pred = pred.prev;
+            } while (pred.waitStatus > 0);
+            pred.next = node;
+        } else {
+        //前任状态为signa以下 更新成signal
+            compareAndSetWaitStatus(pred, ws, Node.SIGNAL);
+        }
+        return false;
+    }
+
+        private final boolean parkAndCheckInterrupt() {
+        //挂起线程 等待唤醒
+        LockSupport.park(this);
+        //唤醒后返回 线程挂起已被中断标志
+        return Thread.interrupted();
+    }
+
+</code></pre>
+
+<p>总结： 以下图就是总结<br><img src="/asset/article/20170628/20170628002.png" alt="Image text"></p>
+<p>感谢 <a href="http://www.jianshu.com/p/4358b1466ec9" target="_blank" rel="external">http://www.jianshu.com/p/4358b1466ec9</a> 收益匪浅</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java-多线程/" rel="tag"># java_多线程</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/31/jstack分析线程问题/" rel="next" title="jstack分析线程问题">
+                <i class="fa fa-chevron-left"></i> jstack分析线程问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/26/复杂sql汇总/" rel="prev" title="复杂sql汇总">
+                复杂sql汇总 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/asset/blogImg/blogUser.jpg"
+               alt="Mr. Xu" />
+          <p class="site-author-name" itemprop="name">Mr. Xu</p>
+          <p class="site-description motion-element" itemprop="description">记录自己平时的小槽点，<br>不扯天马行空的大道理。</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">12</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#大致流程"><span class="nav-number">1.</span> <span class="nav-text">大致流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ReentrantLock"><span class="nav-number">2.</span> <span class="nav-text">ReentrantLock</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#node介绍以及node入队三步骤"><span class="nav-number">2.1.</span> <span class="nav-text">node介绍以及node入队三步骤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#addWaiter方法将线程打包成新节点"><span class="nav-number">2.2.</span> <span class="nav-text">addWaiter方法将线程打包成新节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#acquireQueued方法-将新节点入队"><span class="nav-number">2.3.</span> <span class="nav-text">acquireQueued方法 将新节点入队</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mr. Xu</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
