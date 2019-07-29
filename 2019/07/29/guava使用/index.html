@@ -1,0 +1,596 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="缓存," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="Guava 是Google提供的一套Java工具包，而Guava Cache作为Guava的Cache部分而提供非常完善的本地缓存机制。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="guava使用.md">
+<meta property="og:url" content="http://yoursite.com/2019/07/29/guava使用/index.html">
+<meta property="og:site_name" content="学习是件开心事">
+<meta property="og:description" content="Guava 是Google提供的一套Java工具包，而Guava Cache作为Guava的Cache部分而提供非常完善的本地缓存机制。">
+<meta property="og:updated_time" content="2019-07-29T10:36:43.945Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="guava使用.md">
+<meta name="twitter:description" content="Guava 是Google提供的一套Java工具包，而Guava Cache作为Guava的Cache部分而提供非常完善的本地缓存机制。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/07/29/guava使用/"/>
+
+
+
+
+
+  <title> guava使用.md | 学习是件开心事 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">学习是件开心事</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/29/guava使用/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Mr. Xu">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/asset/blogImg/blogUser.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="学习是件开心事">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="学习是件开心事" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                guava使用.md
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-07-29T17:16:10+08:00">
+                2019-07-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Guava 是Google提供的一套Java工具包，而Guava Cache作为Guava的Cache部分而提供非常完善的本地缓存机制。<br>             <a id="more"></a><br>Guava Cache是一个基于全内存的本地缓存实现，它提供了线程安全的实现机制。只支持增删改查，刷新规则和时效规则设定等最基本的设定。<br>ehcache直接在jvm虚拟机中缓存，速度快，效率高；但是缓存共享麻烦，集群分布式应用不方便。<br>redis是通过socket访问到缓存服务，效率比ecache低，比数据库要快很多，处理集群和分布式缓存方便，有成熟的方案。<br>如果如果是单个应用或者对缓存访问要求很高，并且仅仅是存取简单的操作的话用guava，<br>如果如果是单个应用或者对缓存访问要求很高，用ehcache。<br>如果是大型系统，存在缓存共享、分布式部署、缓存内容很大的，建议用redis。</p>
+<p>以下是guava再springboot中的使用<br>step1： 配置文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">guava:</div><div class="line">  cache:</div><div class="line">    config:</div><div class="line">      expireAfterAccessDuration: 24</div><div class="line">      initialCapacity: 500</div><div class="line">      concurrencyLevel: 5000</div></pre></td></tr></table></figure></p>
+<p>step2: 启用配置，并且生成cacheBuilder和caheManager对象<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">@ConfigurationProperties(prefix = &quot;guava.cache.config&quot;)</div><div class="line">public class GuavaProperties &#123;</div><div class="line"></div><div class="line">    private long expireAfterAccessDuration = 5;</div><div class="line"></div><div class="line">    private int initialCapacity;</div><div class="line"></div><div class="line">    private int concurrencyLevel;</div><div class="line"></div><div class="line">    ......</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">@Configuration</div><div class="line">@EnableConfigurationProperties(GuavaProperties.class)</div><div class="line">public class GuavaConfig &#123;</div><div class="line"></div><div class="line">    @Autowired</div><div class="line">    private GuavaProperties guavaProperties;</div><div class="line"></div><div class="line">    @Bean</div><div class="line">    public CacheBuilder&lt;Object, Object&gt; cacheBuilder() &#123;</div><div class="line">        return CacheBuilder.newBuilder()</div><div class="line">                .initialCapacity(guavaProperties.getInitialCapacity())</div><div class="line">                .concurrencyLevel(guavaProperties.getConcurrencyLevel())</div><div class="line">                .expireAfterWrite(guavaProperties.getExpireAfterAccessDuration(), TimeUnit.MINUTES);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @DependsOn(&#123;&quot;cacheBuilder&quot;&#125;)</div><div class="line">    @Bean</div><div class="line">    public GuavaCacheManager guavaCacheManager(CacheBuilder&lt;Object, Object&gt; cacheBuilder) &#123;</div><div class="line">        GuavaCacheManager cacheManager = new GuavaCacheManager();</div><div class="line">        cacheManager.setCacheBuilder(cacheBuilder);</div><div class="line">        return cacheManager;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>step3: 使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div></pre></td><td class="code"><pre><div class="line">@Service</div><div class="line">public class CompanyService &#123;</div><div class="line"></div><div class="line">    @Autowired</div><div class="line">    private GuavaCacheManager cacheManager;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 最基础的是根据cacheManage获取cache，再用cache根据key获取缓存值</div><div class="line">     */</div><div class="line">    public Object getByCacheManager() &#123;</div><div class="line">        String cacheName = &quot;cacheName&quot;;</div><div class="line">        Cache cache = cacheManager.getCache(cacheName);</div><div class="line">        return cache.get(&quot;key&quot;, () -&gt; &#123;</div><div class="line">            return &quot;1&quot;;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * @Cacheable 用于某个方法，希望这个方法添加缓存，此方法被调用的时候，如果有缓存，此方法不执行。</div><div class="line">     * value：缓存名称</div><div class="line">     * key：cache根据key获取缓存的值，支持spring的el表达式。</div><div class="line">     *    key=&quot;#id&quot; :传入的参数</div><div class="line">     *    key=&quot;#p0&quot; :第一个参数</div><div class="line">     *    key=&quot;#user.id&quot; : User中的id值</div><div class="line">     * condition： 指定缓存结果集</div><div class="line">     *    condition=&quot;#user.id%2==0&quot; ： 只有当user的id为偶数时才会进行缓存</div><div class="line">     */</div><div class="line">    @Cacheable(value = &#123;&quot;cacheName&quot;&#125;, key = &quot;#user.id&quot;,condition = &quot;#user.id%2==0&quot;)</div><div class="line">    public String getByCacheAble() &#123;</div><div class="line">        return &quot;1&quot;;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 用于某个方法，每次被调用，此方法都执行，并把结果更新到PutCache配置的地方，一般用于缓存更新</div><div class="line">     * 支持value、key、condition</div><div class="line">     */</div><div class="line">    @CachePut(value = &#123;&quot;cacheName&quot;&#125;)</div><div class="line">    public String getByCachePut() &#123;</div><div class="line">        return &quot;2&quot;;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 当标记在一个类上时表示其中所有的方法的执行都会触发缓存的清除操作,当指定了allEntries为true时，Spring Cache将忽略指定的key</div><div class="line">     * 支持value、key、condition</div><div class="line">     */</div><div class="line">    @CacheEvict(value = &quot;cacheName&quot;, allEntries = true)</div><div class="line">    public String clear() &#123;</div><div class="line">        return &quot;2&quot;;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/缓存/" rel="tag"># 缓存</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/18/优化if和else/" rel="next" title="优化if和else">
+                <i class="fa fa-chevron-left"></i> 优化if和else
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/asset/blogImg/blogUser.jpg"
+               alt="Mr. Xu" />
+          <p class="site-author-name" itemprop="name">Mr. Xu</p>
+          <p class="site-description motion-element" itemprop="description">记录自己平时的小槽点，<br>不扯天马行空的大道理。</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">14</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mr. Xu</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
