@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="linux_环境," />
+  <meta name="keywords" content="环境," />
 
 
 
@@ -84,16 +84,23 @@
 
 
 
-<meta name="description" content="step1:确定已经设置域名服务器  $ cat /etc/resolv.conf    -    nameserver 8.8.8.8    nameserver 8.8.4.4">
+<meta name="description" content="jmeter是apache旗下的一款开源的功能性能测试工具，相比Loadrunner而言，JMeter小巧轻便且免费，逐渐成为了主流的性能测试工具。本人用jmeter主要测试部分核心接口，有时也用它来测试数据库。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="linux ping通ip不通域名">
-<meta property="og:url" content="http://yoursite.com/2016/12/01/linux-ping通ip不通域名/index.html">
+<meta property="og:title" content="jmeter压测">
+<meta property="og:url" content="http://yoursite.com/2019/07/30/jmeter压测/index.html">
 <meta property="og:site_name" content="学习是件开心事">
-<meta property="og:description" content="step1:确定已经设置域名服务器  $ cat /etc/resolv.conf    -    nameserver 8.8.8.8    nameserver 8.8.4.4">
-<meta property="og:updated_time" content="2016-12-30T07:18:53.032Z">
+<meta property="og:description" content="jmeter是apache旗下的一款开源的功能性能测试工具，相比Loadrunner而言，JMeter小巧轻便且免费，逐渐成为了主流的性能测试工具。本人用jmeter主要测试部分核心接口，有时也用它来测试数据库。">
+<meta property="og:image" content="http://yoursite.com/asset/article/20190731/1.png">
+<meta property="og:image" content="http://yoursite.com/asset/article/20190731/2.png">
+<meta property="og:image" content="http://yoursite.com/asset/article/20190731/3.png">
+<meta property="og:image" content="http://yoursite.com/asset/article/20190731/4.png">
+<meta property="og:image" content="http://yoursite.com/asset/article/20190731/5.png">
+<meta property="og:image" content="http://yoursite.com/asset/article/20190731/6.png">
+<meta property="og:updated_time" content="2019-07-31T01:51:20.980Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="linux ping通ip不通域名">
-<meta name="twitter:description" content="step1:确定已经设置域名服务器  $ cat /etc/resolv.conf    -    nameserver 8.8.8.8    nameserver 8.8.4.4">
+<meta name="twitter:title" content="jmeter压测">
+<meta name="twitter:description" content="jmeter是apache旗下的一款开源的功能性能测试工具，相比Loadrunner而言，JMeter小巧轻便且免费，逐渐成为了主流的性能测试工具。本人用jmeter主要测试部分核心接口，有时也用它来测试数据库。">
+<meta name="twitter:image" content="http://yoursite.com/asset/article/20190731/1.png">
 
 
 
@@ -121,13 +128,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2016/12/01/linux-ping通ip不通域名/"/>
+  <link rel="canonical" href="http://yoursite.com/2019/07/30/jmeter压测/"/>
 
 
 
 
 
-  <title> linux ping通ip不通域名 | 学习是件开心事 </title>
+  <title> jmeter压测 | 学习是件开心事 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -238,7 +245,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/01/linux-ping通ip不通域名/">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/30/jmeter压测/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="Mr. Xu">
@@ -262,7 +269,7 @@
             
             
               
-                linux ping通ip不通域名
+                jmeter压测
               
             
           </h1>
@@ -275,8 +282,8 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-01T10:07:15+08:00">
-                2016-12-01
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-07-30T15:40:50+08:00">
+                2019-07-30
               </time>
             
 
@@ -311,11 +318,57 @@
       
 
       
-        <p></p><h4>step1:确定已经设置域名服务器</h4><br>  $ cat /etc/resolv.conf<br>    -<br>    nameserver 8.8.8.8<br>    nameserver 8.8.4.4<br><a id="more"></a><p></p>
-<p></p><h4>step2:确保网关已设置</h4><br>  $ grep GATEWAY /etc/sysconfig/network-scripts/ifcfg*<br>    -<br>    /etc/sysconfig/network-scripts/ifcfg-eth0:GATEWAY=192.168.1.2<p></p>
-<p></p><h4>step3:确保dns设置正确</h4><br>  $ grep hosts /etc/nsswitch.conf<br>    -<br>    hosts: files dns<p></p>
-<p> </p><h4>step4: 测试 </h4><br>  $ ping www.baidu.com<br>  -<br>  PING www.baidu.com (220.181.6.175) 56(84) bytes of data.<br>  64 bytes from 220.181.6.175: icmp_seq=0 ttl=50 time=9.51 ms   <p></p>
-<p>  感谢博客： <a href="http://www.7edown.com/edu/article/soft_5126_1.html" target="_blank" rel="external">http://www.7edown.com/edu/article/soft_5126_1.html</a>      </p>
+        <p>jmeter是apache旗下的一款开源的功能性能测试工具，相比Loadrunner而言，JMeter小巧轻便且免费，逐渐成为了主流的性能测试工具。本人用jmeter主要测试部分核心接口，有时也用它来测试数据库。<br><a id="more"></a></p>
+<h1 id="jmeter安装"><a href="#jmeter安装" class="headerlink" title="jmeter安装"></a>jmeter安装</h1><p>下载地址 ：<a href="https://jmeter.apache.org/download_jmeter.cgi" target="_blank" rel="external">https://jmeter.apache.org/download_jmeter.cgi</a><br>目前最新的版本为 Apache JMeter 5.1.1 (Requires Java 8+)，额外要求本地jdk版本为8+。</p>
+<h3 id="打开jmeter"><a href="#打开jmeter" class="headerlink" title="打开jmeter"></a>打开jmeter</h3><p>双击jmeter文件夹下 “ApacheJmeter.jar”，打开jmeter，入眼为一个空的测试计划<br><img src="/asset/article/20190731/1.png" alt="Image text"></p>
+<h3 id="新建线程组"><a href="#新建线程组" class="headerlink" title="新建线程组"></a>新建线程组</h3><p>右键  “测试计划” -&gt; “添加” -&gt;  “线程(用户)” -&gt; “线程组”<br><img src="/asset/article/20190731/2.png" alt="Image text"><br>线程组用来控制发送请求的并发数</p>
+<ul>
+<li>线程数: 虚拟用户数。一个虚拟用户占用一个进程或线程。设置多少虚拟用户数在这里也就是设置多少个线程数</li>
+</ul>
+<ul>
+<li>Ramp-Up Period(in seconds)准备时长:设置的虚拟用户数需要多长时间全部启动。如果线程数为10，准备时长为2，那么需要2秒钟启动10个线程，也就是每秒钟启动5个线程。</li>
+</ul>
+<ul>
+<li>循环次数: 每个线程发送请求的次数。如果线程数为10，循环次数为100，那么每个线程发送100次请求。总请求数为10*100=1000 。如果勾选了“永远”，那么所有线程会一直发送请求，一到选择停止运行脚本。</li>
+</ul>
+<ul>
+<li>延迟创建线程直到需要: 直到需要时延迟线程的创建</li>
+<li>调度器: 设置线程组启动的开始时间和结束时间(配置调度器时，需要勾选循环次数为永远) <ul>
+<li>持续时间（秒）：测试持续时间，会覆盖结束时间</li>
+<li>启动延迟（秒）：测试延迟启动时间，会覆盖启动时间 </li>
+<li>启动时间：测试启动时间，启动延迟会覆盖它。当启动时间已过，手动只需测试时当前时间也会覆盖它。</li>
+<li>结束时间：测试结束时间，持续时间会覆盖它<br>附上本人压测配置图</li>
+</ul>
+</li>
+</ul>
+<h3 id="添加HTTP请求-用户定义的变量-csv数据文件设置"><a href="#添加HTTP请求-用户定义的变量-csv数据文件设置" class="headerlink" title="添加HTTP请求+用户定义的变量+csv数据文件设置"></a>添加HTTP请求+用户定义的变量+csv数据文件设置</h3><ul>
+<li><p>添加http请求。右键”线程组” -&gt; “添加” -&gt; 取样器” -&gt; “http请求”<br><img src="/asset/article/20190731/3.png" alt="Image text"></p>
+</li>
+<li><p>填写协议、ip、端口、请求方式（post/get）、路径。<br>如果想动态生成这些，右键”线程组” -&gt; “添加” -&gt; “配置元件” -&gt; “用户定义的变量”<br>在这里可以填写动态的ip、端口等<br><img src="/asset/article/20190731/4.png" alt="Image text"></p>
+</li>
+<li><p>填写消息体数据。如果想动态生成入参，右键”线程组” （或者右键http请求） -&gt; “添加” -&gt; “配置元件” -&gt; “csv数据文件设置”，再这里可以添加入参文件txt，以及变量名.<br><img src="/asset/article/20190731/5.png" alt="Image text"></p>
+</li>
+<li><p>填写header。右键”线程组” -&gt; “添加” -&gt; “配置元件” -&gt; “http信息头管理”</p>
+</li>
+</ul>
+<h3 id="添加聚合报告-察看结果树"><a href="#添加聚合报告-察看结果树" class="headerlink" title="添加聚合报告+察看结果树"></a>添加聚合报告+察看结果树</h3><p>右键”线程组” -&gt; “添加” -&gt; “监听器” -&gt; “聚合报告”/“察看结果树”,用以实时展示性能测试报告。<br><img src="/asset/article/20190731/6.png" alt="Image text"></p>
+<ul>
+<li>Label。每个 JMeter 的 element（例如 HTTP Request）都有一个 Name 属性，这里显示的就是 Name 属性的值</li>
+<li>样本。请求数——表示这次测试中一共发出了多少个请求，如果模拟10个用户，每个用户迭代10次，那么这里显示100 </li>
+<li>平均值。平均响应时间——默认情况下是单个 Request 的平均响应时间，当使用了 Transaction Controller 时，以Transaction 为单位显示平均响应时间</li>
+<li>中位数。50％ 用户的响应时间 </li>
+<li>90%百分位。90％ 用户的响应时间 </li>
+<li>95%百分位。95％ 用户的响应时间 </li>
+<li>99%百分位。99％ 用户的响应时间 </li>
+<li>最小值。最小响应时间 </li>
+<li>最大值。最大响应时间 </li>
+<li>异常%。 错误请求数/请求总数 </li>
+<li>吞吐量。默认情况下表示每秒完成的请求数</li>
+<li>接收kb/sec。每秒从服务器端接收到的数据量</li>
+<li>发送kb/sec。每秒发送到服务器的数据量</li>
+</ul>
+<p>一般而言，性能测试中我们需要重点关注的数据有。样本、平均值、最小值、最大值、异常%、吞吐量。</p>
+<p>本文参考链接： <a href="https://blog.csdn.net/u012111923/article/details/80705141" target="_blank" rel="external">https://blog.csdn.net/u012111923/article/details/80705141</a></p>
 
       
     </div>
@@ -339,7 +392,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/linux-环境/" rel="tag"># linux_环境</a>
+            <a href="/tags/环境/" rel="tag"># 环境</a>
           
         </div>
       
@@ -348,8 +401,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/11/30/hexo搭建自己的博客/" rel="next" title="Hexo 搭建博客">
-                <i class="fa fa-chevron-left"></i> Hexo 搭建博客
+              <a href="/2019/07/29/guava使用/" rel="next" title="guava使用.md">
+                <i class="fa fa-chevron-left"></i> guava使用.md
               </a>
             
           </div>
@@ -357,10 +410,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/12/01/Redhat6-4-安装yum/" rel="prev" title="Redhat6.4 安装yum">
-                Redhat6.4 安装yum <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -473,7 +522,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">step1:确定已经设置域名服务器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">2.</span> <span class="nav-text">step2:确保网关已设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">3.</span> <span class="nav-text">step3:确保dns设置正确</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">4.</span> <span class="nav-text">step4: 测试 </span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#jmeter安装"><span class="nav-number">1.</span> <span class="nav-text">jmeter安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#打开jmeter"><span class="nav-number">1.0.1.</span> <span class="nav-text">打开jmeter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#新建线程组"><span class="nav-number">1.0.2.</span> <span class="nav-text">新建线程组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加HTTP请求-用户定义的变量-csv数据文件设置"><span class="nav-number">1.0.3.</span> <span class="nav-text">添加HTTP请求+用户定义的变量+csv数据文件设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加聚合报告-察看结果树"><span class="nav-number">1.0.4.</span> <span class="nav-text">添加聚合报告+察看结果树</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
