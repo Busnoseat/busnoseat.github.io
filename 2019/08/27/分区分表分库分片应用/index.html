@@ -84,43 +84,16 @@
 
 
 
-<meta name="description" content="sqlserver单表数据超过2000w后，索引查询的效率开始下降。当数据过亿后，就开始有慢sql出现了。如何对这种体量的数据库进行优化，成为开发最头疼的事情。
-分区把一张表的数据分成N个区块，在逻辑上看最终只是一张表，但底层是由N个物理区块组成的。常见的分区方式有: 
-
-Range（范围）
-Hash（哈希）
-按照时间拆分
-Hash之后按照分表个数取模
-单表保存数据id和db的映射
-
-按照时间拆分">
+<meta name="description" content="sqlserver单表数据超过2000w后，索引查询的效率开始下降。当数据过亿后，就开始有慢sql出现了。如何对这种体量的数据库进行优化，成为开发最头疼的事情。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="分区分表分库分片应用">
 <meta property="og:url" content="http://yoursite.com/2019/08/27/分区分表分库分片应用/index.html">
 <meta property="og:site_name" content="学习是件开心事">
-<meta property="og:description" content="sqlserver单表数据超过2000w后，索引查询的效率开始下降。当数据过亿后，就开始有慢sql出现了。如何对这种体量的数据库进行优化，成为开发最头疼的事情。
-分区把一张表的数据分成N个区块，在逻辑上看最终只是一张表，但底层是由N个物理区块组成的。常见的分区方式有: 
-
-Range（范围）
-Hash（哈希）
-按照时间拆分
-Hash之后按照分表个数取模
-单表保存数据id和db的映射
-
-按照时间拆分">
-<meta property="og:updated_time" content="2019-08-27T08:13:43.226Z">
+<meta property="og:description" content="sqlserver单表数据超过2000w后，索引查询的效率开始下降。当数据过亿后，就开始有慢sql出现了。如何对这种体量的数据库进行优化，成为开发最头疼的事情。">
+<meta property="og:updated_time" content="2019-08-27T08:14:32.239Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="分区分表分库分片应用">
-<meta name="twitter:description" content="sqlserver单表数据超过2000w后，索引查询的效率开始下降。当数据过亿后，就开始有慢sql出现了。如何对这种体量的数据库进行优化，成为开发最头疼的事情。
-分区把一张表的数据分成N个区块，在逻辑上看最终只是一张表，但底层是由N个物理区块组成的。常见的分区方式有: 
-
-Range（范围）
-Hash（哈希）
-按照时间拆分
-Hash之后按照分表个数取模
-单表保存数据id和db的映射
-
-按照时间拆分">
+<meta name="twitter:description" content="sqlserver单表数据超过2000w后，索引查询的效率开始下降。当数据过亿后，就开始有慢sql出现了。如何对这种体量的数据库进行优化，成为开发最头疼的事情。">
 
 
 
@@ -338,7 +311,7 @@ Hash之后按照分表个数取模
       
 
       
-        <p>sqlserver单表数据超过2000w后，索引查询的效率开始下降。当数据过亿后，就开始有慢sql出现了。如何对这种体量的数据库进行优化，成为开发最头疼的事情。</p>
+        <p>sqlserver单表数据超过2000w后，索引查询的效率开始下降。当数据过亿后，就开始有慢sql出现了。如何对这种体量的数据库进行优化，成为开发最头疼的事情。<br><a id="more"></a></p>
 <h1 id="分区"><a href="#分区" class="headerlink" title="分区"></a>分区</h1><p>把一张表的数据分成N个区块，在逻辑上看最终只是一张表，但底层是由N个物理区块组成的。<br><strong>常见的分区方式有:</strong> </p>
 <ul>
 <li>Range（范围）</li>
@@ -352,7 +325,7 @@ Hash之后按照分表个数取模
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">select convert(varchar(50), ps.name </div><div class="line">) as partition_scheme,</div><div class="line">p.partition_number,</div><div class="line">convert(varchar(10), ds2.name </div><div class="line"></div><div class="line">) as filegroup,</div><div class="line">convert(varchar(19), isnull(v.value, &apos;&apos;), 120) as range_boundary,</div><div class="line">str(p.rows, 9) as rows</div><div class="line">from sys.indexes i</div><div class="line">join sys.partition_schemes ps on i.data_space_id = ps.data_space_id</div><div class="line">join sys.destination_data_spaces dds</div><div class="line">on ps.data_space_id = dds.partition_scheme_id</div><div class="line">join sys.data_spaces ds2 on dds.data_space_id = ds2.data_space_id</div><div class="line">join sys.partitions p on dds.destination_id = p.partition_number</div><div class="line">and p.object_id = i.object_id and p.index_id = i.index_id</div><div class="line">join sys.partition_functions pf on ps.function_id = pf.function_id</div><div class="line">LEFT JOIN sys.Partition_Range_values v on pf.function_id = v.function_id</div><div class="line">and v.boundary_id = p.partition_number - pf.boundary_value_on_right</div><div class="line">WHERE i.object_id = object_id(&apos;fang_property_follow&apos;)--分区表名</div><div class="line">and i.index_id in (0, 1)</div><div class="line">order by p.partition_number</div></pre></td></tr></table></figure>
 <h1 id="分表"><a href="#分表" class="headerlink" title="分表"></a>分表</h1><p>是把一张表分成多个小表，适用如下场景: 单表的部分字段频繁的需要修改，可以将该类字段独立出来成一张表，实现单库的”读写分离”</p>
 <h1 id="分库"><a href="#分库" class="headerlink" title="分库"></a>分库</h1><p>对于时效性不高的数据，可以通过读写分离缓解数据库压力，需要注意的是在业务分区上哪些业务是允许一定延迟的，以及数据同步问题</p>
-<h1 id="分片"><a href="#分片" class="headerlink" title="分片"></a>分片</h1><p>在分布式存储系统中，数据需要分散存储在多台设备上，数据分片就是用来确定数据在多台存储设备上分布的技术。数据分片的目的是：</p>
+<h1 id="分片"><a href="#分片" class="headerlink" title="分片"></a>分片</h1><p>在分布式存储系统中，数据需要分散存储在多台设备上，数据分片就是用来确定数据在多台存储设备上分布的技术。数据分片的目的是</p>
 <ul>
 <li>分布均匀，每台设备上的数据量要尽可能详尽</li>
 <li>负载均衡，每台设备上的请求量要尽可能相近</li>
