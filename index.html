@@ -1039,7 +1039,12 @@
 
       
         
-          <h1 id="for-xml-path-‘code’"><a href="#for-xml-path-‘code’" class="headerlink" title="for xml path [(‘code’)]"></a>for xml path [(‘code’)]</h1><p>将多条数据并成一条xml格式数据，并且每个字段都会成为一个元素标签。<br>如果code不为空并则每条数据最外层再套上一层code标签。<br>
+          <h1 id="行转列-case-when-或者-pivot"><a href="#行转列-case-when-或者-pivot" class="headerlink" title="行转列(case when 或者 pivot)"></a>行转列(case when 或者 pivot)</h1><p>接到一个需求，查询每张表的汇总数据，并且汇成一行显示</p>
+<h2 id="case-when的方式，先对数据分组，出参里根据某个字段进行判断"><a href="#case-when的方式，先对数据分组，出参里根据某个字段进行判断" class="headerlink" title="case when的方式，先对数据分组，出参里根据某个字段进行判断"></a>case when的方式，先对数据分组，出参里根据某个字段进行判断</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">with </div><div class="line">userCountQry</div><div class="line">as(</div><div class="line">select cast(count(1) as VARCHAR) as num ,&apos;userCount&apos; as type,&apos;companyUuid1&apos; as name  from org_employee where deleted=0 and status in (&apos;正式&apos;,&apos;试用&apos;,&apos;实习&apos;)  </div><div class="line">)</div><div class="line">,deptCountQry AS</div><div class="line">(</div><div class="line">select cast(count(1) as VARCHAR)  as num ,&apos;shopCount&apos; as type,&apos;companyUuid1&apos; as name  from org_department where deleted=0 and businesstype = &apos;4&apos; and closetime is null </div><div class="line">)</div><div class="line">,firstTimeQry as(</div><div class="line">select  CONVERT(varchar(100), min(createdtime), 112) as num,&apos;firstUserTime&apos; as type,&apos;companyUuid1&apos; as name  from org_employee  where employeeuuid &lt;&gt; &apos;9999&apos;</div><div class="line">)</div><div class="line">,estateQey AS(</div><div class="line">select  cast(count(1) as VARCHAR) as num ,&apos;estateCount&apos; as type ,&apos;companyUuid1&apos; as name  from loupan_estate estate where estate.deleted=0 and ISNULL(estate.standardEstateUuid, &apos;&apos;)&lt;&gt;&apos;&apos;</div><div class="line">)</div><div class="line">select </div><div class="line">max(case when type = &apos;userCount&apos; then num else 0 end) &apos;使用经纪人量&apos;</div><div class="line">,max(case when type = &apos;shopCount&apos; then num else 0 end) &apos;使用门店量&apos;</div><div class="line">,max(case when type = &apos;firstUserTime&apos; then num else 0 end) &apos;开始使用时间&apos;</div><div class="line">,max(case when type = &apos;estateCount&apos; then num else 0 end) &apos;关联小区数量&apos;</div><div class="line">from (</div><div class="line">select * from userCountQry</div><div class="line">union all</div><div class="line">select * from deptCountQry</div><div class="line">union all</div><div class="line">select * from firstTimeQry</div><div class="line">union all </div><div class="line">select * from estateQey</div><div class="line">)a group by a.name</div></pre></td></tr></table></figure>
+<p>附上查询结果：<br><img src="/asset/article/20190909/1.png" alt="Image text"></p>
+<h2 id="pivot的方式，这是sqlserver提供的一种函数，大致语法为："><a href="#pivot的方式，这是sqlserver提供的一种函数，大致语法为：" class="headerlink" title="pivot的方式，这是sqlserver提供的一种函数，大致语法为："></a>pivot的方式，这是sqlserver提供的一种函数，大致语法为：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> *  大致语法为</div><div class="line"> *  select * from sourceTable</div><div class="line"> *  PIVOT(</div><div class="line"> *  聚合函数（value_column）</div><div class="line"> *  FOR pivot_column</div><div class="line"> *  IN(&lt;column_list&gt;)</div><div class="line"> *</div><div class="line"> */</div><div class="line"></div><div class="line">with </div><div class="line">userCountQry</div><div class="line">as(</div><div class="line">select cast(count(1) as VARCHAR) as num ,&apos;经纪人使用量&apos; as type  from org_employee where deleted=0 and status in (&apos;正式&apos;,&apos;试用&apos;,&apos;实习&apos;)  </div><div class="line">)</div><div class="line">,deptCountQry AS</div><div class="line">(</div><div class="line">select cast(count(1) as VARCHAR)  as num ,&apos;门店使用量&apos; as type from org_department where deleted=0 and businesstype = &apos;4&apos; and closetime is null </div><div class="line">)</div><div class="line">,firstTimeQry as(</div><div class="line">select  CONVERT(varchar(100), min(createdtime), 112) as num,&apos;首次使用时间&apos; as type  from org_employee </div><div class="line">)</div><div class="line">,estateQey AS(</div><div class="line">select  cast(count(1) as VARCHAR) as num ,&apos;小区关联使用量&apos; as type from loupan_estate estate where estate.deleted=0 and ISNULL(estate.standardEstateUuid, &apos;&apos;)&lt;&gt;&apos;&apos;</div><div class="line">)</div><div class="line"></div><div class="line">select * from</div><div class="line">(</div><div class="line">select * from userCountQry</div><div class="line">union all</div><div class="line">select * from deptCountQry</div><div class="line">union all</div><div class="line">select * from firstTimeQry</div><div class="line">union all </div><div class="line">select * from estateQey</div><div class="line">)tb pivot(max(num) for type in(经纪人使用量,门店使用量,首次使用时间,小区关联使用量)</div><div class="line">) pvt</div></pre></td></tr></table></figure>
+<p>附上查询结果：<br><img src="/asset/article/20190909/2.png" alt="Image text"></p>
+<h1 id="列转行-for-xml-path-‘code’"><a href="#列转行-for-xml-path-‘code’" class="headerlink" title="列转行 (for xml path [(‘code’)])"></a>列转行 (for xml path [(‘code’)])</h1><p>将多条数据并成一条xml格式数据，并且每个字段都会成为一个元素标签。<br>如果code不为空并则每条数据最外层再套上一层code标签。<br>
           <!--noindex-->
           <div class="post-more-link text-center">
             <a class="btn" href="/2018/03/26/复杂sql汇总/#more" rel="contents">
@@ -1499,7 +1504,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">17</span>
+              <span class="site-state-item-count">18</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1509,7 +1514,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -1522,6 +1527,12 @@
         <div class="links-of-author motion-element">
           
         </div>
+
+
+          <!-- 网易云音乐插件 -->
+          <div class="links-of-author motion-element">
+            <iframe frameborder="no" border="0" marginwidth="0" marginheight="20" width=530 height=86 src="//music.163.com/outchain/player?type=2&id=694286&auto=1&height=66"></iframe>
+         </div> 
 
         
         
