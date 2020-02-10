@@ -84,20 +84,19 @@
 
 
 
-<meta name="description" content="hexo添加背景音乐，流程是生成iframe标签，并将标签嵌入到js里即可。">
+<meta name="description" content="#第一篇文章 当然是怎么搭建博客的
+step1: 安装准备git (这个不用说)node (用这个来引入优秀的js框架 比如hexo)github（自己创建的博客 最终是要挂在github上面的 ）">
 <meta property="og:type" content="article">
-<meta property="og:title" content="hexo添加背景音乐">
+<meta property="og:title" content="Hexo 搭建博客">
 <meta property="og:url" content="http://yoursite.com/2016/11/30/hexo搭建自己的博客/index.html">
 <meta property="og:site_name" content="学习是件开心事">
-<meta property="og:description" content="hexo添加背景音乐，流程是生成iframe标签，并将标签嵌入到js里即可。">
-<meta property="og:image" content="http://yoursite.com/asset/article/20190912/1.png">
-<meta property="og:image" content="http://yoursite.com/asset/article/20190912/2.png">
-<meta property="og:image" content="http://yoursite.com/asset/article/20190912/3.png">
-<meta property="og:updated_time" content="2019-09-12T09:42:38.964Z">
+<meta property="og:description" content="#第一篇文章 当然是怎么搭建博客的
+step1: 安装准备git (这个不用说)node (用这个来引入优秀的js框架 比如hexo)github（自己创建的博客 最终是要挂在github上面的 ）">
+<meta property="og:updated_time" content="2019-09-12T09:19:06.199Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="hexo添加背景音乐">
-<meta name="twitter:description" content="hexo添加背景音乐，流程是生成iframe标签，并将标签嵌入到js里即可。">
-<meta name="twitter:image" content="http://yoursite.com/asset/article/20190912/1.png">
+<meta name="twitter:title" content="Hexo 搭建博客">
+<meta name="twitter:description" content="#第一篇文章 当然是怎么搭建博客的
+step1: 安装准备git (这个不用说)node (用这个来引入优秀的js框架 比如hexo)github（自己创建的博客 最终是要挂在github上面的 ）">
 
 
 
@@ -131,7 +130,7 @@
 
 
 
-  <title> hexo添加背景音乐 | 学习是件开心事 </title>
+  <title> Hexo 搭建博客 | 学习是件开心事 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -266,7 +265,7 @@
             
             
               
-                hexo添加背景音乐
+                Hexo 搭建博客
               
             
           </h1>
@@ -315,10 +314,15 @@
       
 
       
-        <p>hexo添加背景音乐，流程是生成iframe标签，并将标签嵌入到js里即可。<br><a id="more"></a></p>
-<h1 id="生成iframe插件"><a href="#生成iframe插件" class="headerlink" title="生成iframe插件"></a>生成iframe插件</h1><p>网易云网页版里点击歌曲左下方的”生成外链播放器”，在页面里copy出已经生成好的iframe标签<br><img src="/asset/article/20190912/1.png" alt="Image text"><br><img src="/asset/article/20190912/2.png" alt="Image text"></p>
-<h1 id="嵌入iframe标签"><a href="#嵌入iframe标签" class="headerlink" title="嵌入iframe标签"></a>嵌入iframe标签</h1><p>本人hexo使用的主题为next，修改文件文件blog/themes/next/layout/_macro/sidebar.swig,为了保持和原来样式一致，div最好不要自己重新写，从里面copy一个样式就行了<br><img src="/asset/article/20190912/3.png" alt="Image text"></p>
-<p>附上本人的添加的js代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;!-- 网易云音乐插件 --&gt;</div><div class="line"> &lt;div class=&quot;links-of-author motion-element&quot;&gt;</div><div class="line">          &lt;iframe frameborder=&quot;no&quot; border=&quot;0&quot; marginwidth=&quot;0&quot; marginheight=&quot;20&quot; width=530 height=86 src=&quot;//music.163.com/outchain/player?type=2&amp;id=694286&amp;auto=1&amp;height=66&quot;&gt;&lt;/iframe&gt;</div><div class="line">  &lt;/div&gt;</div></pre></td></tr></table></figure></p>
+        <p>#第一篇文章 当然是怎么搭建博客的</p>
+<p></p><h4>step1: 安装准备</h4><br>git (这个不用说)<br>node (用这个来引入优秀的js框架 比如hexo)<br>github（自己创建的博客 最终是要挂在github上面的 ）<br><a id="more"></a><p></p>
+<p></p><h4>step2: 引入hexo</h4><br>新建一个文件夹 比如blog, 在文件里右键git bash<br>npm install -g hexo   (执行命令安装hexo)<br>hexo  init  (初始化)<p></p>
+<p></p><h4>step3: 第一次启动查看本地的博客</h4><br>hexo g  (将本地文件blog下的source下的_post下的.md文件生成html)<br>hexo server   （本地启动hexo）<br>本地访问 <a href="http://localhost:4000" target="_blank" rel="external">http://localhost:4000</a><p></p>
+<p></p><h4>step4: 关联本地hexo到github</h4><br>vim  _config.yml  （编辑hexo的配置文件）<br>翻到最下面 改成：<br>deploy:<br>     type: git<br>     repo: <a href="https://github.com/Busnoseat/Busnoseat.github.io.git" target="_blank" rel="external">https://github.com/Busnoseat/Busnoseat.github.io.git</a><br>     branch: master<br>（注意 :的后面是有空格的） <p></p>
+<p>npm install hexo-deployer-git –save  （关联hexo到github上）<br>hexo clean  （清理之前生成的博客）<br>hexo g       （重新生成博客）<br>hexo d        (将博客推送github上)</p>
+<p></p><h4>step5：美化 复制人家的博客 哈哈</h4><br>大神博客： <a href="https://github.com/litten/hexo-theme-yilia" target="_blank" rel="external">https://github.com/litten/hexo-theme-yilia</a> 最下面有提供copy方法<p></p>
+<p></p><h4>step6: 学习markdown的用法</h4><br>学习链接 ：<a href="https://www.zybuluo.com/mdeditor" target="_blank" rel="external">https://www.zybuluo.com/mdeditor</a><p></p>
+<p>最后，感谢<a href="http://www.jianshu.com/p/465830080ea9" target="_blank" rel="external">http://www.jianshu.com/p/465830080ea9</a> 这篇文章 文中大半参考 谢谢。</p>
 
       
     </div>
@@ -357,8 +361,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/11/30/hexo/" rel="prev" title="Hexo 搭建博客">
-                Hexo 搭建博客 <i class="fa fa-chevron-right"></i>
+              <a href="/2016/11/30/hexo添加背景音乐/" rel="prev" title="hexo添加背景音乐">
+                hexo添加背景音乐 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -427,7 +431,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">18</span>
+              <span class="site-state-item-count">22</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -437,7 +441,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">10</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -478,7 +482,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#生成iframe插件"><span class="nav-number">1.</span> <span class="nav-text">生成iframe插件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#嵌入iframe标签"><span class="nav-number">2.</span> <span class="nav-text">嵌入iframe标签</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">step1: 安装准备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">2.</span> <span class="nav-text">step2: 引入hexo</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">3.</span> <span class="nav-text">step3: 第一次启动查看本地的博客</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">4.</span> <span class="nav-text">step4: 关联本地hexo到github</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">5.</span> <span class="nav-text">step5：美化 复制人家的博客 哈哈</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">6.</span> <span class="nav-text">step6: 学习markdown的用法</span></a></li></ol></div>
             
 
           </div>
@@ -499,7 +503,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
