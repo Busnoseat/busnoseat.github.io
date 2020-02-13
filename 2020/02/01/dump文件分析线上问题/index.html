@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="hexo," />
+  <meta name="keywords" content="线上问题," />
 
 
 
@@ -84,19 +84,22 @@
 
 
 
-<meta name="description" content="#第一篇文章 当然是怎么搭建博客的
-step1: 安装准备git (这个不用说)node (用这个来引入优秀的js框架 比如hexo)github（自己创建的博客 最终是要挂在github上面的 ）">
+<meta name="description" content="一般运维都会配置dump文件生成规则,当线上服务发生宕机后，我们要做的就是第一时间就是像运维索要dunp文件并分析。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hexo 搭建博客">
-<meta property="og:url" content="http://yoursite.com/2016/11/30/hexo搭建自己的博客/index.html">
+<meta property="og:title" content="dump文件分析线上问题">
+<meta property="og:url" content="http://yoursite.com/2020/02/01/dump文件分析线上问题/index.html">
 <meta property="og:site_name" content="学习是件开心事">
-<meta property="og:description" content="#第一篇文章 当然是怎么搭建博客的
-step1: 安装准备git (这个不用说)node (用这个来引入优秀的js框架 比如hexo)github（自己创建的博客 最终是要挂在github上面的 ）">
-<meta property="og:updated_time" content="2019-09-12T09:19:06.199Z">
+<meta property="og:description" content="一般运维都会配置dump文件生成规则,当线上服务发生宕机后，我们要做的就是第一时间就是像运维索要dunp文件并分析。">
+<meta property="og:image" content="http://yoursite.com/asset/article/20200201/1.png">
+<meta property="og:image" content="http://yoursite.com/asset/article/20200201/2.png">
+<meta property="og:image" content="http://yoursite.com/asset/article/20200201/3.png">
+<meta property="og:image" content="http://yoursite.com/asset/article/20200201/4.png">
+<meta property="og:image" content="http://yoursite.com/asset/article/20200201/5.png">
+<meta property="og:updated_time" content="2020-02-13T10:18:58.833Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo 搭建博客">
-<meta name="twitter:description" content="#第一篇文章 当然是怎么搭建博客的
-step1: 安装准备git (这个不用说)node (用这个来引入优秀的js框架 比如hexo)github（自己创建的博客 最终是要挂在github上面的 ）">
+<meta name="twitter:title" content="dump文件分析线上问题">
+<meta name="twitter:description" content="一般运维都会配置dump文件生成规则,当线上服务发生宕机后，我们要做的就是第一时间就是像运维索要dunp文件并分析。">
+<meta name="twitter:image" content="http://yoursite.com/asset/article/20200201/1.png">
 
 
 
@@ -124,13 +127,13 @@ step1: 安装准备git (这个不用说)node (用这个来引入优秀的js框�
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2016/11/30/hexo搭建自己的博客/"/>
+  <link rel="canonical" href="http://yoursite.com/2020/02/01/dump文件分析线上问题/"/>
 
 
 
 
 
-  <title> Hexo 搭建博客 | 学习是件开心事 </title>
+  <title> dump文件分析线上问题 | 学习是件开心事 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -241,7 +244,7 @@ step1: 安装准备git (这个不用说)node (用这个来引入优秀的js框�
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/30/hexo搭建自己的博客/">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/01/dump文件分析线上问题/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="Mr. Xu">
@@ -265,7 +268,7 @@ step1: 安装准备git (这个不用说)node (用这个来引入优秀的js框�
             
             
               
-                Hexo 搭建博客
+                dump文件分析线上问题
               
             
           </h1>
@@ -278,8 +281,8 @@ step1: 安装准备git (这个不用说)node (用这个来引入优秀的js框�
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-30T11:54:46+08:00">
-                2016-11-30
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-01T15:36:09+08:00">
+                2020-02-01
               </time>
             
 
@@ -314,15 +317,13 @@ step1: 安装准备git (这个不用说)node (用这个来引入优秀的js框�
       
 
       
-        <p>#第一篇文章 当然是怎么搭建博客的</p>
-<p></p><h4>step1: 安装准备</h4><br>git (这个不用说)<br>node (用这个来引入优秀的js框架 比如hexo)<br>github（自己创建的博客 最终是要挂在github上面的 ）<br><a id="more"></a><p></p>
-<p></p><h4>step2: 引入hexo</h4><br>新建一个文件夹 比如blog, 在文件里右键git bash<br>npm install -g hexo   (执行命令安装hexo)<br>hexo  init  (初始化)<p></p>
-<p></p><h4>step3: 第一次启动查看本地的博客</h4><br>hexo g  (将本地文件blog下的source下的_post下的.md文件生成html)<br>hexo server   （本地启动hexo）<br>本地访问 <a href="http://localhost:4000" target="_blank" rel="external">http://localhost:4000</a><p></p>
-<p></p><h4>step4: 关联本地hexo到github</h4><br>vim  _config.yml  （编辑hexo的配置文件）<br>翻到最下面 改成：<br>deploy:<br>     type: git<br>     repo: <a href="https://github.com/Busnoseat/Busnoseat.github.io.git" target="_blank" rel="external">https://github.com/Busnoseat/Busnoseat.github.io.git</a><br>     branch: master<br>（注意 :的后面是有空格的） <p></p>
-<p>npm install hexo-deployer-git –save  （关联hexo到github上）<br>hexo clean  （清理之前生成的博客）<br>hexo g       （重新生成博客）<br>hexo d        (将博客推送github上)</p>
-<p></p><h4>step5：美化 复制人家的博客 哈哈</h4><br>大神博客： <a href="https://github.com/litten/hexo-theme-yilia" target="_blank" rel="external">https://github.com/litten/hexo-theme-yilia</a> 最下面有提供copy方法<p></p>
-<p></p><h4>step6: 学习markdown的用法</h4><br>学习链接 ：<a href="https://www.zybuluo.com/mdeditor" target="_blank" rel="external">https://www.zybuluo.com/mdeditor</a><p></p>
-<p>最后，感谢<a href="http://www.jianshu.com/p/465830080ea9" target="_blank" rel="external">http://www.jianshu.com/p/465830080ea9</a> 这篇文章 文中大半参考 谢谢。</p>
+        <p>一般运维都会配置dump文件生成规则,当线上服务发生宕机后，我们要做的就是第一时间就是像运维索要dunp文件并分析。<br><a id="more"></a>这里先简化一个完整的dump文件分析线上问题。</p>
+<h2 id="模拟获取dunp文件"><a href="#模拟获取dunp文件" class="headerlink" title="模拟获取dunp文件"></a>模拟获取dunp文件</h2><p>在idea的VM options里配置dump生成路径</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">-Xms20m -Xmx20m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=D:\soft</div></pre></td></tr></table></figure>
+<p>启动测试类<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">public class TestDump &#123;</div><div class="line"></div><div class="line">    class Student &#123;</div><div class="line">        Long[] a;</div><div class="line"></div><div class="line">        public Student(Long[] a) &#123;</div><div class="line">            this.a = a;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Test</div><div class="line">    public void test1() &#123;</div><div class="line">        List a=new ArrayList&lt;&gt;();</div><div class="line">        for (int i = 0; i &lt; 1000000; i++) &#123;</div><div class="line">            Student s = new Student(new Long[1024 * 1024]);</div><div class="line">            a.add(s);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>运行结果如下图：<br><img src="/asset/article/20200201/1.png" alt="Image text"></p>
+<h2 id="visualVm打卡dump文件"><a href="#visualVm打卡dump文件" class="headerlink" title="visualVm打卡dump文件"></a>visualVm打卡dump文件</h2><p>采用jdk自带的jvisualVm打开dump文件<br><img src="/asset/article/20200201/2.png" alt="Image text"><br>装入生成的dump文件<br><img src="/asset/article/20200201/3.png" alt="Image text"><br>在概要里可以大概看到发生宕机前处理的相关类<br><img src="/asset/article/20200201/4.png" alt="Image text"><br>更准确的是切换到“类”标签下，按照内存大小排序，查看大小占比如下图<br><img src="/asset/article/20200201/5.png" alt="Image text"><br>明显大量内存被分配到了long[]里，查询TestDump类long[]的地方分析就完事了。</p>
+<p>感谢原文： <a href="https://blog.csdn.net/better_mouse/article/details/89449580" target="_blank" rel="external">https://blog.csdn.net/better_mouse/article/details/89449580</a> 受益匪浅</p>
 
       
     </div>
@@ -346,7 +347,7 @@ step1: 安装准备git (这个不用说)node (用这个来引入优秀的js框�
       
         <div class="post-tags">
           
-            <a href="/tags/hexo/" rel="tag"># hexo</a>
+            <a href="/tags/线上问题/" rel="tag"># 线上问题</a>
           
         </div>
       
@@ -355,14 +356,18 @@ step1: 安装准备git (这个不用说)node (用这个来引入优秀的js框�
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2019/12/11/java阻塞队列/" rel="next" title="java阻塞队列">
+                <i class="fa fa-chevron-left"></i> java阻塞队列
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/11/30/hexo添加背景音乐/" rel="prev" title="hexo添加背景音乐">
-                hexo添加背景音乐 <i class="fa fa-chevron-right"></i>
+              <a href="/2020/02/09/YYYY引发的血案/" rel="prev" title="YYYY引发的血案">
+                YYYY引发的血案 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -482,7 +487,7 @@ step1: 安装准备git (这个不用说)node (用这个来引入优秀的js框�
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">step1: 安装准备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">2.</span> <span class="nav-text">step2: 引入hexo</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">3.</span> <span class="nav-text">step3: 第一次启动查看本地的博客</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">4.</span> <span class="nav-text">step4: 关联本地hexo到github</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">5.</span> <span class="nav-text">step5：美化 复制人家的博客 哈哈</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">6.</span> <span class="nav-text">step6: 学习markdown的用法</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#模拟获取dunp文件"><span class="nav-number">1.</span> <span class="nav-text">模拟获取dunp文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#visualVm打卡dump文件"><span class="nav-number">2.</span> <span class="nav-text">visualVm打卡dump文件</span></a></li></ol></div>
             
 
           </div>
