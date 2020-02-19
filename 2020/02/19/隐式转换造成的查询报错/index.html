@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="线上问题," />
 
 
 
@@ -84,12 +84,21 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="学习是件开心事">
-<meta property="og:url" content="http://yoursite.com/tags/jvm/index.html">
+<meta name="description" content="隐式转换会导致查询不走索引而走全盘扫描。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="隐式转换造成的查询报错">
+<meta property="og:url" content="http://yoursite.com/2020/02/19/隐式转换造成的查询报错/index.html">
 <meta property="og:site_name" content="学习是件开心事">
+<meta property="og:description" content="隐式转换会导致查询不走索引而走全盘扫描。">
+<meta property="og:image" content="http://yoursite.com/asset/article/20200219/1.png">
+<meta property="og:image" content="http://yoursite.com/asset/article/20200219/2.png">
+<meta property="og:image" content="http://yoursite.com/asset/article/20200219/3.png">
+<meta property="og:image" content="http://yoursite.com/asset/article/20200219/4.png">
+<meta property="og:updated_time" content="2020-02-19T09:54:09.716Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="学习是件开心事">
+<meta name="twitter:title" content="隐式转换造成的查询报错">
+<meta name="twitter:description" content="隐式转换会导致查询不走索引而走全盘扫描。">
+<meta name="twitter:image" content="http://yoursite.com/asset/article/20200219/1.png">
 
 
 
@@ -117,13 +126,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/tags/jvm/"/>
+  <link rel="canonical" href="http://yoursite.com/2020/02/19/隐式转换造成的查询报错/"/>
 
 
 
 
 
-  <title> 标签: jvm | 学习是件开心事 </title>
+  <title> 隐式转换造成的查询报错 | 学习是件开心事 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -144,7 +153,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -224,46 +233,148 @@
           <div id="content" class="content">
             
 
-  <div id="posts" class="posts-collapse">
-    <div class="collection-title">
-      <h2 >
-        jvm
-        <small>标签</small>
-      </h2>
-    </div>
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/19/隐式转换造成的查询报错/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Mr. Xu">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/asset/blogImg/blogUser.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="学习是件开心事">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="学习是件开心事" src="">
+    </span>
+  </span>
 
     
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                隐式转换造成的查询报错
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-19T14:08:59+08:00">
+                2020-02-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
       
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+      
+        <p>隐式转换会导致查询不走索引而走全盘扫描。<a id="more"></a><br>线上某家公司定时任务更新数据的时候报错，错误信息如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[Err] 22018 - [SQL Server]Conversion failed when converting the varchar value &apos;2,3&apos; to data type int.</div></pre></td></tr></table></figure></p>
+<p>第一反应是更新数据时，将某个numeric字段更新成字符串‘2，3’，这就导致转换出错。然后花了点时间搜寻日志，结果惊奇发现要更新的数据里没有数据是‘2，3’。懵逼了一阵后，申请查询线上数据，结果发现一个简单的查询都会报错。这样就确定了其实是历史数据是有‘2，3’的，而不是要更新的数据里有造成的。<br>以下做个简单测试，表student有varchar字段age，其中有条数据age为44c。<br><img src="/asset/article/20200219/1.png" alt="Image Text"><br>然后手写一个简单查询，因为age=11这种写法存在隐式转换，导致全盘扫描，所有数据库数据取出来都转换成int然后和11比较是否相等，其中字符串‘44c’无法转换成int而报错。至此线上问题已经复现。<br><img src="/asset/article/20200219/2.png" alt="Image Text"><br>下面是一个没有隐式转换，正确的查询。<br><img src="/asset/article/20200219/3.png" alt="Image Text"><br>下面虽然是有隐式转换但是也不报错的查询，因为查询加了新的查询条件导致查询结果集为空，也就不需要转换了。<br><img src="/asset/article/20200219/4.png" alt="Image Text"></p>
 
-      <h1 class="post-title">
+      
+    </div>
+
+    <div>
+      
         
-            <a class="post-title-link" href="/2017/05/31/jstack分析线程问题/" itemprop="url">
-              
-                <span itemprop="name">jstack分析线程问题</span>
-              
-            </a>
+
+      
+    </div>
+
+    <div>
+      
         
-      </h1>
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-05-31T14:27:16+08:00"
-              content="2017-05-31" >
-          05-31
-        </time>
-      </div>
+      
+    </div>
 
-    </header>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/线上问题/" rel="tag"># 线上问题</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/02/18/idea创建文件夹的坑/" rel="next" title="idea创建文件夹的坑">
+                <i class="fa fa-chevron-left"></i> idea创建文件夹的坑
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </article>
 
 
-    
-  </div>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -271,6 +382,10 @@
 
 
           
+  <div class="comments" id="comments">
+    
+  </div>
+
 
         </div>
         
@@ -302,7 +417,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-count">27</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -448,6 +563,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
 
   
 
