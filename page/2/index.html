@@ -841,7 +841,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/26/复杂sql汇总/">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/14/工厂模式/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="Mr. Xu">
@@ -866,8 +866,8 @@
             
               
                 
-                <a class="post-title-link" href="/2018/03/26/复杂sql汇总/" itemprop="url">
-                  复杂sql汇总
+                <a class="post-title-link" href="/2018/04/14/工厂模式/" itemprop="url">
+                  工厂模式
                 </a>
               
             
@@ -881,8 +881,8 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-26T16:18:56+08:00">
-                2018-03-26
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-04-14T12:48:40+08:00">
+                2018-04-14
               </time>
             
 
@@ -918,10 +918,10 @@
 
       
         
-          <p>记录自己平时遇到的复杂sql<br>
+          <p>将一组相似产品的创建过程放到一个类里来提供，这个类的设计即为工厂模式。在工厂模式中，我们在创建对象时不会对客户端暴露创建逻辑，并且是通过使用一个共同的接口来指向新创建的对象。<br>
           <!--noindex-->
           <div class="post-more-link text-center">
-            <a class="btn" href="/2018/03/26/复杂sql汇总/#more" rel="contents">
+            <a class="btn" href="/2018/04/14/工厂模式/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -962,7 +962,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/28/AQS相关/">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/14/代理模式/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="Mr. Xu">
@@ -987,8 +987,8 @@
             
               
                 
-                <a class="post-title-link" href="/2017/06/28/AQS相关/" itemprop="url">
-                  AQS相关
+                <a class="post-title-link" href="/2018/04/14/代理模式/" itemprop="url">
+                  代理模式
                 </a>
               
             
@@ -1002,8 +1002,8 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-06-28T11:27:29+08:00">
-                2017-06-28
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-04-14T11:22:24+08:00">
+                2018-04-14
               </time>
             
 
@@ -1039,15 +1039,10 @@
 
       
         
-          <p> 多线程并发情况下需要考虑线程安全问题，一般用锁来确保核心代码只有单个线程能运行。长用的有synchronized、ReentrantLock、ReadWriteLock，这些内部实现都依赖于AbstractQueuedSynchronizer类。</p>
-<h1 id="大致流程"><a href="#大致流程" class="headerlink" title="大致流程"></a>大致流程</h1><ol>
-<li>线程尝试获取锁，如果获取到，线程状态保持RUNNING,程序按照业务流程走下去</li>
-<li>如果获取失败,说明已经有其他线程获取锁了,将此线程加入到等待队列中，并将该线程挂起</li>
-<li>线程尝试释放锁，并将等待队列中的线程唤醒‘</li>
-</ol>
+          <p>通过代理对象访问目标对象.这样做的好处是:可以在目标对象实现的功能上,增加额外的功能补充,即扩展目标对象的功能。<br>
           <!--noindex-->
           <div class="post-more-link text-center">
-            <a class="btn" href="/2017/06/28/AQS相关/#more" rel="contents">
+            <a class="btn" href="/2018/04/14/代理模式/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1088,7 +1083,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/31/jstack分析线程问题/">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/13/适配器模式/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="Mr. Xu">
@@ -1113,8 +1108,8 @@
             
               
                 
-                <a class="post-title-link" href="/2017/05/31/jstack分析线程问题/" itemprop="url">
-                  jstack分析线程问题
+                <a class="post-title-link" href="/2018/04/13/适配器模式/" itemprop="url">
+                  适配器模式
                 </a>
               
             
@@ -1128,8 +1123,8 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-31T14:27:16+08:00">
-                2017-05-31
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-04-13T16:53:55+08:00">
+                2018-04-13
               </time>
             
 
@@ -1165,12 +1160,10 @@
 
       
         
-          <p>原文地址：<a href="http://www.jianshu.com/p/6690f7e92f27">http://www.jianshu.com/p/6690f7e92f27</a>  感谢占小狼！！</p>
-<p>如何查看测试或线上 占用cpu较高的线程？</p>
-<h1 id="step1-top"><a href="#step1-top" class="headerlink" title="step1 : top"></a>step1 : top</h1><p>查询所有的进程占用<br>
+          <p>如果原有接口不太适合扩展新功能的时候，需要提供一个适配类，在这个适配类里实现新功能，原有的接口只需要调用这个适配类就行。<br>
           <!--noindex-->
           <div class="post-more-link text-center">
-            <a class="btn" href="/2017/05/31/jstack分析线程问题/#more" rel="contents">
+            <a class="btn" href="/2018/04/13/适配器模式/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1211,7 +1204,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/29/多线程-ScheduledThreadPoolExecutor/">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/13/装饰者模式/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="Mr. Xu">
@@ -1236,8 +1229,8 @@
             
               
                 
-                <a class="post-title-link" href="/2016/12/29/多线程-ScheduledThreadPoolExecutor/" itemprop="url">
-                  多线程-ScheduledThreadPoolExecutor
+                <a class="post-title-link" href="/2018/04/13/装饰者模式/" itemprop="url">
+                  装饰者模式
                 </a>
               
             
@@ -1251,8 +1244,8 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-29T16:24:54+08:00">
-                2016-12-29
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-04-13T16:09:29+08:00">
+                2018-04-13
               </time>
             
 
@@ -1288,20 +1281,10 @@
 
       
         
-          <p> 开门见山</p>
-<pre><code>public class ScheduledThreadPoolExecutor
-        extends ThreadPoolExecutor
-        implements ScheduledExecutorService {
-
-        public ScheduledThreadPoolExecutor(int corePoolSize) {
-        //super调用父类的构造方法 即调用ThreadPoolExecutor的构造方法 
-        super(corePoolSize, Integer.MAX_VALUE, 0, NANOSECONDS,
-              new DelayedWorkQueue());
-    }
-      }</code></pre>
+          <p>对已有的业务逻辑进一步的封装，使其增加额外的功能，用户在使用的时候可以任意组装，达到自己想要的效果。如java中的io流。<br>
           <!--noindex-->
           <div class="post-more-link text-center">
-            <a class="btn" href="/2016/12/29/多线程-ScheduledThreadPoolExecutor/#more" rel="contents">
+            <a class="btn" href="/2018/04/13/装饰者模式/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1342,7 +1325,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/19/多线程-Executors/">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/13/观察者模式/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="Mr. Xu">
@@ -1367,8 +1350,8 @@
             
               
                 
-                <a class="post-title-link" href="/2016/12/19/多线程-Executors/" itemprop="url">
-                  多线程-Executors
+                <a class="post-title-link" href="/2018/04/13/观察者模式/" itemprop="url">
+                  观察者模式
                 </a>
               
             
@@ -1382,8 +1365,8 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-19T11:11:03+08:00">
-                2016-12-19
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-04-13T14:52:07+08:00">
+                2018-04-13
               </time>
             
 
@@ -1419,12 +1402,10 @@
 
       
         
-          <p>在<a href="https://busnoseat.github.io/2016/12/15/并发模式-多线程/">https://busnoseat.github.io/2016/12/15/并发模式-多线程/</a>  这篇文章里，分析了线程池ThreadPoolExecutor的工作模式。这篇文章稍微分析下Executors.<br>Executors是ThreadPoolExecutor的执行器，可以使用java定义好的几种线程池，其实这几种线程池共用了一个构造方法，只是入参不一样就有了不一样的线程池。</p>
-<p><h4>newFixedThreadPool:可重用固定线程池</h4></p>
-<p><pre><br><code>public static ExecutorService newFixedThreadPool(int nThreads) {<br>        return new ThreadPoolExecutor(nThreads, nThreads,<br>                                      0L, TimeUnit.MILLISECONDS,<br>                                      new LinkedBlockingQueue<Runnable>());<br>    }</code><br></pre><br>
+          <p>对象间一对多的关系，当一个对象的状态发生改变时，所以依赖于它的对象都会收到通知并处理相关逻辑。 被观察者需要知道所有的观察者，被观察者发生被动时，要循环它的所有观察者们来处理逻辑。<br>
           <!--noindex-->
           <div class="post-more-link text-center">
-            <a class="btn" href="/2016/12/19/多线程-Executors/#more" rel="contents">
+            <a class="btn" href="/2018/04/13/观察者模式/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1460,7 +1441,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1501,7 +1482,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">27</span>
+              <span class="site-state-item-count">33</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
