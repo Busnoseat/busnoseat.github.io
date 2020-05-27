@@ -90,7 +90,7 @@
 <meta property="og:url" content="http://yoursite.com/2019/09/25/redis缓存/index.html">
 <meta property="og:site_name" content="学习是件开心事">
 <meta property="og:description" content="Redis 是完全开源免费的，遵守BSD协议，是一个高性能的key-value数据库。">
-<meta property="og:updated_time" content="2020-05-21T13:58:31.524Z">
+<meta property="og:updated_time" content="2020-05-27T12:00:28.630Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="redis">
 <meta name="twitter:description" content="Redis 是完全开源免费的，遵守BSD协议，是一个高性能的key-value数据库。">
@@ -365,8 +365,49 @@
 <li>同步磁盘数据<br>aof机制会将命令记录到aof文件, 但实际是同步到操作系统的缓存区, 最终由操作系统同步到磁盘. 可以通过下面配置修改策略<br>1 appendsync always ： 每次执行写入就同步, 安全但影响性能<br>2 appendsync everysec ： 每一秒执行<br>3 appendsync no ： 不执行同步, 由操作系统去执行, 效率高但不安全</li>
 <li><p>缺点<br>1 aof文件要远大于rdb文件，恢复速度慢于rdb<br>2 aof运行效率要慢于rdb,每秒同步策略效率较好，不同步效率和rdb相同</p>
 <hr>
-<h1 id="redis事务"><a href="#redis事务" class="headerlink" title="redis事务"></a>redis事务</h1><hr>
-<h1 id="发布订阅"><a href="#发布订阅" class="headerlink" title="发布订阅"></a>发布订阅</h1><hr>
+</li>
+</ul>
+<h1 id="redis事务"><a href="#redis事务" class="headerlink" title="redis事务"></a>redis事务</h1><ul>
+<li><p>Redis 事务可以一次执行多个命令，<br>一个事务从开始到执行会经历以下三个阶段：开始事务。命令入队。执行事务。<br>1 批量操作在发送 EXEC 命令前被放入队列缓存。<br>2 收到 EXEC 命令后进入事务执行，事务中任意命令执行失败，其余的命令依然被执行。<br>3 在事务执行过程，其他客户端提交的命令请求不会插入到事务执行命令序列中。</p>
+</li>
+<li><p>Redis事务命令</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>详解</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MULTI</td>
+<td>标记一个事务块的开始</td>
+</tr>
+<tr>
+<td>EXEC</td>
+<td>执行所有事务块内的命令</td>
+</tr>
+<tr>
+<td>DISCARD</td>
+<td>取消事务，放弃执行事务块内的所有命令</td>
+</tr>
+<tr>
+<td>UNWATCH</td>
+<td>取消 WATCH 命令对所有 key 的监视</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p>总结<br>单个 Redis 命令的执行是原子性的，但 Redis 没有在事务上增加任何维持原子性的机制，所以 Redis 事务的执行并不是原子性的。</p>
+<hr>
+</li>
+</ul>
+<h1 id="发布订阅"><a href="#发布订阅" class="headerlink" title="发布订阅"></a>发布订阅</h1><ul>
+<li>原理<br>Redis的发布以及订阅有点类似于聊天，是一种消息通信模式。在这个模式中，发送者（发送信息的客户端）不是将信息直接发送给特定的接收者（接收信息的客户端）， 而是将信息发送给频道（channel）， 然后由频道将信息转发给所有对这个频道感兴趣的订阅者。<br>1 三个客户端订阅一个频道<br>2 当有新消息通过 PUBLISH 命令发送给频道 channel1 时， 这个消息就会被发送给订阅它的三个客户端</li>
+<li><p>用途<br>分布式缓存中，多个内存缓存的clean，除了使用zookeeper之外，也可以使用redis的订阅发布功能来通知。胜在简易。</p>
+<hr>
 <p># </p>
 <p>【参考文献】：<br><a href="https://blog.csdn.net/qq_40804005/article/details/82919154" target="_blank" rel="external">https://blog.csdn.net/qq_40804005/article/details/82919154</a><br><a href="https://www.runoob.com/redis/redis-intro.html" target="_blank" rel="external">https://www.runoob.com/redis/redis-intro.html</a><br><a href="https://www.cnblogs.com/hjwublog/p/5660578.html" target="_blank" rel="external">https://www.cnblogs.com/hjwublog/p/5660578.html</a><br><a href="https://www.cnblogs.com/jimisun/p/10045772.html" target="_blank" rel="external">https://www.cnblogs.com/jimisun/p/10045772.html</a><br><a href="https://blog.csdn.net/Stream_who/article/details/86354391" target="_blank" rel="external">https://blog.csdn.net/Stream_who/article/details/86354391</a><br><a href="https://www.cnblogs.com/demingblog/p/10295236.html" target="_blank" rel="external">https://www.cnblogs.com/demingblog/p/10295236.html</a><br><a href="https://www.cnblogs.com/cheyunhua/p/10771694.html" target="_blank" rel="external">https://www.cnblogs.com/cheyunhua/p/10771694.html</a><br><a href="https://www.cnblogs.com/walkinhalo/p/10719688.html" target="_blank" rel="external">https://www.cnblogs.com/walkinhalo/p/10719688.html</a></p>
 </li>
@@ -483,7 +524,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">34</span>
+              <span class="site-state-item-count">38</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -683,5 +724,5 @@
   
 
 
-</body>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/assets/shizuku.model.json"},"display":{"position":"left","width":300,"height":600},"mobile":{"show":true},"log":false});</script></body>
 </html>

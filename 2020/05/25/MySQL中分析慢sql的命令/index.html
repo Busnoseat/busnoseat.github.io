@@ -1,0 +1,668 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="sql," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="随着线上的数据增多，sql性能会逐渐体现出来，这个时候就体现出sql优化的重要性。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL中分析慢sql的命令">
+<meta property="og:url" content="http://yoursite.com/2020/05/25/MySQL中分析慢sql的命令/index.html">
+<meta property="og:site_name" content="学习是件开心事">
+<meta property="og:description" content="随着线上的数据增多，sql性能会逐渐体现出来，这个时候就体现出sql优化的重要性。">
+<meta property="og:updated_time" content="2020-05-27T12:00:28.619Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MySQL中分析慢sql的命令">
+<meta name="twitter:description" content="随着线上的数据增多，sql性能会逐渐体现出来，这个时候就体现出sql优化的重要性。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/05/25/MySQL中分析慢sql的命令/"/>
+
+
+
+
+
+  <title> MySQL中分析慢sql的命令 | 学习是件开心事 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">学习是件开心事</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/25/MySQL中分析慢sql的命令/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Mr. Xu">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/asset/blogImg/blogUser.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="学习是件开心事">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="学习是件开心事" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                MySQL中分析慢sql的命令
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-05-25T19:26:15+08:00">
+                2020-05-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>随着线上的数据增多，sql性能会逐渐体现出来，这个时候就体现出sql优化的重要性。<br><a id="more"></a></p>
+<h2 id="show-status命令了解各种SQL的执行频率"><a href="#show-status命令了解各种SQL的执行频率" class="headerlink" title="show status命令了解各种SQL的执行频率"></a>show status命令了解各种SQL的执行频率</h2><p>show [session|global] status可以根据需要加上参数“session”或者“global”来显示session级（当前连接）的统计结果和global级（自数据库上次启动至今）的统计结果。如果不写，默认使用的参数是“session”。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">mysql&gt; show status like &apos;Com_%&apos;;</div><div class="line">Com_select：执行SELECT操作的次数，一次查询只累加1。</div><div class="line">Com_insert：执行INSERT操作的次数，对于批量插入的INSERT操作，只累加一次。</div><div class="line">Com_update：执行UPDATE操作的次数。</div><div class="line">Com_delete：执行DELETE操作的次数。</div><div class="line">...</div><div class="line"> </div><div class="line">#针对InnoDB存储引擎</div><div class="line">mysql&gt; show status like &apos;Innodb_%&apos;;</div><div class="line">Innodb_rows_read：SELECT查询返回的行数。</div><div class="line">Innodb_rows_inserted：执行INSERT操作插入的行数。</div><div class="line">Innodb_rows_updated：执行UPDATE操作更新的行数。</div><div class="line">Innodb_rows_deleted：执行DELETE操作删除的行数。</div></pre></td></tr></table></figure></p>
+<p>此外，以下几个参数便于用户了解数据库的基本情况。</p>
+<ul>
+<li>Connections:试图连接MySQL服务器的次数</li>
+<li>Uptime：服务器工作时间</li>
+<li>Slow_queries：慢查询的次数</li>
+</ul>
+<hr>
+<h2 id="定位执行效率较低的SQL语句"><a href="#定位执行效率较低的SQL语句" class="headerlink" title="定位执行效率较低的SQL语句"></a>定位执行效率较低的SQL语句</h2><p>以下两种方式定位执行效率较低的SQL语句</p>
+<ul>
+<li>通过慢查询日志定位那些执行效率较低的SQL语句，用<strong>–log-slow-queries[= file_name]</strong>选项启动时，mysqld写一个包含所有执行时间超过long_query_time秒的SQL语句的日志文件</li>
+<li>使用 <strong>show processlist</strong>命令查看当前MySQL在进行的线程，包括线程的状态、是否锁表等，可以实时地查看 SQL 的执行情况，同时对一些锁表操作进行优化</li>
+</ul>
+<hr>
+<h2 id="通过EXPLAIN分析低效SQL的执行计划"><a href="#通过EXPLAIN分析低效SQL的执行计划" class="headerlink" title="通过EXPLAIN分析低效SQL的执行计划"></a>通过EXPLAIN分析低效SQL的执行计划</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">EXPLAIN select * from qf_marketing_realhouse.tp_property_sync where propertyNo=&apos;YXEB0100024&apos;;</div><div class="line"> </div><div class="line">id: 1</div><div class="line">select_type: SIMPLE</div><div class="line">table: tp_property_sync</div><div class="line">type: ref   </div><div class="line">possible_keys: propertyNo   </div><div class="line">key: NULL</div><div class="line">key_len: NULL</div><div class="line">ref: const   </div><div class="line">rows: 1</div><div class="line">Extra: Using where</div></pre></td></tr></table></figure>
+<ul>
+<li>select_type: 表示SELECT的类型，常见的取值有SIMPLE（简单表，即不使用表连接或者子查询）、PRIMARY（主查询，即外层的查询）、UNION（UNION中的第二个或者后面的查询语句）、SUBQUERY（子查询中的第一个SELECT）等。</li>
+<li>table：输出结果集的表。</li>
+<li>type：表示MySQL在表中找到所需行的方式，或者叫访问类型，常见类型<ul>
+<li>type=ALL，全表扫描，MySQL遍历全表来找到匹配的行</li>
+<li>type=index，索引全扫描，MySQL遍历整个索引来查询匹配的行</li>
+<li>type=range，索引范围扫描，常见于&lt;、&lt;=、&gt;、&gt;=、between等操作符</li>
+<li>type=ref，使用非唯一索引扫描或唯一索引的前缀扫描，返回匹配某个单独值的记录行</li>
+<li>type=eq_ref，类似ref，区别就在使用的索引是唯一索引，对于每个索引键值，表中只有一条记录匹配；简单来说，就是多表连接中使用 primary key或者 unique index作为关联条件</li>
+<li>type=const/system，单表中最多有一个匹配行，查询起来非常迅速，所以这个匹配行中的其他列的值可以被优化器在当前查询中当作常量来处理，例如，根据主键 primary key或者唯一索引 unique index进行的查询</li>
+<li>type=NULL，MySQL不用访问表或者索引，直接就能够得到结果</li>
+</ul>
+</li>
+<li>possible_keys：表示查询时可能使用的索引</li>
+<li>key：表示实际使用的索引</li>
+<li>key_len：使用到索引字段的长度</li>
+<li>rows：扫描行的数量</li>
+<li>Extra：执行情况的说明和描述，包含不适合在其他列中显示但是对执行计划非常重要的额外信息<br>tip:MySQL 4.1开始引入了 explain extended命令，通过 explain extended加上 show warnings，我们能够看到在SQL真正被执行之前优化器做了哪些SQL改写.<br>MySQL 5.1开始支持分区功能，同时 explain命令也增加了对分区的支持。可以通过 explain partitions命令查看SQL所访问的分区。</li>
+</ul>
+<h2 id="通过show-profile分析SQL"><a href="#通过show-profile分析SQL" class="headerlink" title="通过show profile分析SQL"></a>通过show profile分析SQL</h2><p>MySQL 从 5.0.37 版本开始增加了对 show profiles 和 show profile 语句的支持。通过have_profiling参数，能够看到当前MySQL是否支持profile：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">mysql&gt; select @@have_profiling;</div><div class="line">+------------------+</div><div class="line">| @@have_profiling |</div><div class="line">+------------------+</div><div class="line">| YES |</div><div class="line">+------------------+</div><div class="line">1 row in set (0.00 sec)</div></pre></td></tr></table></figure></p>
+<p>默认profiling是关闭的，可以通过set语句在Session级别开启profiling：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">mysql&gt; select @@profiling;</div><div class="line">+-------------+</div><div class="line">| @@profiling |</div><div class="line">+-------------+</div><div class="line">| 0 |</div><div class="line">+-------------+</div><div class="line">1 row in set (0.02 sec)</div><div class="line">mysql&gt; set profiling=1;</div><div class="line">Query OK, 0 rows affected (0.00 sec)</div></pre></td></tr></table></figure></p>
+<p>通过profile，我们能够更清楚地了解SQL执行的过程.show profile能够在做SQL优化时帮助我们了解时间都耗费到哪里去了<br>tip:MyISAM表有表元数据的缓存（例如行数，即COUNT(星)值），那么对一个MyISAM表的COUNT(星)是不需要消耗太多资源的，而对于 InnoDB 来说，就没有这种元数据缓存，COUNT(星)执行得较慢。<br>通过 <strong>show profiles</strong>语句，可看到当前执行SQL的Query ID;<br>通过 <strong>show profile for query</strong>语句,能够看到执行过程中线程的每个状态和消耗的时间,在获取到最消耗时间的线程状态后，MySQL支持进一步选择 all、cpu、block io、context switch、page faults等明细类型来查看MySQL在使用什么资源上耗费了过高的时间.</p>
+<h2 id="通过-trace分析优化器如何选择执行计划"><a href="#通过-trace分析优化器如何选择执行计划" class="headerlink" title="通过 trace分析优化器如何选择执行计划"></a>通过 trace分析优化器如何选择执行计划</h2><p>MySQL 5.6提供了对SQL的跟踪 trace，通过 trace文件能够进一步了解为什么优化器选择A执行计划而不选择B执行计划，帮助我们更好地理解优化器的行为。<br>使用方式：首先打开trace，设置格式为JSON，设置 trace最大能够使用的内存大小，避免解析过程中因为默认内存过小而不能够完整显示。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">mysql&gt; SET OPTIMIZER_TRACE=&quot;enabled=on&quot;,END_MARKERS_IN_JSON=on;</div><div class="line">Query OK, 0 rows affected (0.03 sec)</div><div class="line">mysql&gt; SET OPTIMIZER_TRACE_MAX_MEM_SIZE=1000000;</div><div class="line">Query OK, 0 rows affected (0.00 sec)</div></pre></td></tr></table></figure></p>
+<p>在执行想做trace的SQL语句后，检查INFORMATION_SCHEMA.OPTIMIZER_TRACE就可以知道MySQL是如何执行SQL的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mysql&gt; SELECT * FROM INFORMATION_SCHEMA.OPTIMIZER_TRACE\G</div></pre></td></tr></table></figure></p>
+<p>最后会输出一个json格式跟踪文件。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/sql/" rel="tag"># sql</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/05/25/es使用建议/" rel="next" title="es使用建议">
+                <i class="fa fa-chevron-left"></i> es使用建议
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/05/27/InnoDB和MyISAM的区别/" rel="prev" title="InnoDB和MyISAM的区别">
+                InnoDB和MyISAM的区别 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/asset/blogImg/blogUser.jpg"
+               alt="Mr. Xu" />
+          <p class="site-author-name" itemprop="name">Mr. Xu</p>
+          <p class="site-description motion-element" itemprop="description">记录自己平时的小槽点，<br>不扯天马行空的大道理。</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">38</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+
+          <!-- 网易云音乐插件 -->
+          <div class="links-of-author motion-element">
+            <iframe frameborder="no" border="0" marginwidth="0" marginheight="20" width=530 height=86 src="//music.163.com/outchain/player?type=2&id=694286&auto=1&height=66"></iframe>
+         </div> 
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#show-status命令了解各种SQL的执行频率"><span class="nav-number">1.</span> <span class="nav-text">show status命令了解各种SQL的执行频率</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定位执行效率较低的SQL语句"><span class="nav-number">2.</span> <span class="nav-text">定位执行效率较低的SQL语句</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过EXPLAIN分析低效SQL的执行计划"><span class="nav-number">3.</span> <span class="nav-text">通过EXPLAIN分析低效SQL的执行计划</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过show-profile分析SQL"><span class="nav-number">4.</span> <span class="nav-text">通过show profile分析SQL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过-trace分析优化器如何选择执行计划"><span class="nav-number">5.</span> <span class="nav-text">通过 trace分析优化器如何选择执行计划</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mr. Xu</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/assets/shizuku.model.json"},"display":{"position":"left","width":300,"height":600},"mobile":{"show":true},"log":false});</script></body>
+</html>
