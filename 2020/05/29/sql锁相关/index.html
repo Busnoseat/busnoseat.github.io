@@ -1,0 +1,679 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="sql," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="整理网上关于数据库锁相关的常识">
+<meta property="og:type" content="article">
+<meta property="og:title" content="sql锁相关">
+<meta property="og:url" content="http://yoursite.com/2020/05/29/sql锁相关/index.html">
+<meta property="og:site_name" content="学习是件开心事">
+<meta property="og:description" content="整理网上关于数据库锁相关的常识">
+<meta property="og:image" content="http://yoursite.com/asset/article/20200601/1.png">
+<meta property="og:image" content="http://yoursite.com/asset/article/20200601/2.png">
+<meta property="og:image" content="http://yoursite.com/asset/article/20200601/3.png">
+<meta property="og:image" content="http://yoursite.com/asset/article/20200601/4.png">
+<meta property="og:image" content="http://yoursite.com/asset/article/20200601/5.png">
+<meta property="og:image" content="http://yoursite.com/asset/article/20200601/6.png">
+<meta property="og:image" content="http://yoursite.com/asset/article/20200601/7.png">
+<meta property="og:image" content="http://yoursite.com/asset/article/20200601/8.png">
+<meta property="og:updated_time" content="2020-06-03T13:46:50.989Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="sql锁相关">
+<meta name="twitter:description" content="整理网上关于数据库锁相关的常识">
+<meta name="twitter:image" content="http://yoursite.com/asset/article/20200601/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/05/29/sql锁相关/"/>
+
+
+
+
+
+  <title> sql锁相关 | 学习是件开心事 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">学习是件开心事</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/29/sql锁相关/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Mr. Xu">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/asset/blogImg/blogUser.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="学习是件开心事">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="学习是件开心事" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                sql锁相关
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-05-29T16:27:57+08:00">
+                2020-05-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>整理网上关于数据库锁相关的常识<br><a id="more"></a></p>
+<h2 id="多用户操作的数据问题"><a href="#多用户操作的数据问题" class="headerlink" title="多用户操作的数据问题"></a>多用户操作的数据问题</h2><ul>
+<li>更新丢失：多个用户同时对一个数据资源进行更新，必定会产生被覆盖的数据，造成数据读写异常</li>
+<li>不可重复读：如果一个用户在一个事务中多次读取一条数据，而另外一个用户则同时更新啦这条数据，造成第一个用户多次读取数据不一致</li>
+<li>脏读：第一个事务读取第二个事务正在更新的数据表，如果第二个事务还没有更新完成，那么第一个事务读取的数据将是一半为更新过的，一半还没更新过的数据，这样的数据毫无意义</li>
+<li>幻读：第一个事务读取一个结果集后，第二个事务，对这个结果集经行增删操作，然而第一个事务中再次对这个结果集进行查询时，数据发现丢失或新增</li>
+</ul>
+<h2 id="sql锁分类"><a href="#sql锁分类" class="headerlink" title="sql锁分类"></a>sql锁分类</h2><p>为了解决多用户操作产生的数据问题，数据库系统引入了锁</p>
+<ul>
+<li>共享锁（S）：还可以叫他读锁。可以并发读取数据，但不能修改数据。也就是说当数据资源上存在共享锁的时候，所有的事务都不能对这个资源进行修改，直到数据读取完成，共享锁释放</li>
+<li>排它锁（X）：还可以叫他独占锁、写锁。就是如果你对数据资源进行增删改操作时，不允许其它任何事务操作这块资源，直到排它锁被释放，防止同时对同一资源进行多重操作。</li>
+<li>更新锁（U）：防止出现死锁的锁模式，两个事务对一个数据资源进行先读取在修改的情况下，使用共享锁和排它锁有时会出现死锁现象，而使用更新锁则可以避免死锁的出现。资源的更新锁一次只能分配给一个事务，如果需要对资源进行修改，更新锁会变成排他锁，否则变为共享锁。</li>
+<li>意向锁：SQL Server需要在层次结构中的底层资源上（如行，列）获取共享锁，排它锁，更新锁。例如表级放置了意向共享锁，就表示事务要对表的页或行上使用共享锁。在表的某一行上上放置意向锁，可以防止其它事务获取其它不兼容的的锁。意向锁可以提高性能，因为数据引擎不需要检测资源的每一列每一行，就能判断是否可以获取到该资源的兼容锁。意向锁包括三种类型：意向共享锁（IS），意向排他锁（IX），意向排他共享锁（SIX）。</li>
+</ul>
+<h2 id="事务隔离级别"><a href="#事务隔离级别" class="headerlink" title="事务隔离级别"></a>事务隔离级别</h2><ul>
+<li>Read Uncommited(RU):读未提交，一个事务可以读到另一个事务未提交的数据。最低的级别，存在脏读。</li>
+<li>read committed：这个级别是默认选项，不能脏读，不能读取事务正在处理没有提交的数据，但能修改，所以存在幻读</li>
+<li>repeatable read：不能读取事务正在处理的数据，也不能修改事务处理数据前的数据，可重复读，加入间隙锁，一定程度上避免了幻读的产生</li>
+<li>serializable：最高事务隔离级别，只能看到事务处理之前的数据</li>
+</ul>
+<h2 id="判断加锁的前置条件"><a href="#判断加锁的前置条件" class="headerlink" title="判断加锁的前置条件"></a>判断加锁的前置条件</h2><ul>
+<li>当前系统的隔离级别是什么</li>
+<li>id列是不是主键</li>
+<li>id列如果不是主键，那么id列上有索引吗</li>
+<li>如果存在索引是聚簇索引还是非聚簇索引呢</li>
+</ul>
+<h2 id="判断加锁示例"><a href="#判断加锁示例" class="headerlink" title="判断加锁示例"></a>判断加锁示例</h2><h3 id="id列是主键，RC隔离级别"><a href="#id列是主键，RC隔离级别" class="headerlink" title="id列是主键，RC隔离级别"></a>id列是主键，RC隔离级别</h3><p>id是主键时，此SQL只需要在id=10这条记录上加X锁即可。<br><img src="/asset/article/20200601/1.png" alt="image"></p>
+<h3 id="id列是二级唯一索引，RC隔离级别"><a href="#id列是二级唯一索引，RC隔离级别" class="headerlink" title="id列是二级唯一索引，RC隔离级别"></a>id列是二级唯一索引，RC隔离级别</h3><p>若id列是unique列，其上有unique索引。那么SQL需要加两个X锁，一个对应于id unique索引上的id = 10的记录，另一把锁对应于聚簇索引上的[name=’d’,id=10]的记录<br><img src="/asset/article/20200601/2.png" alt="image"></p>
+<h3 id="id列是二级非唯一索引，RC隔离级别"><a href="#id列是二级非唯一索引，RC隔离级别" class="headerlink" title="id列是二级非唯一索引，RC隔离级别"></a>id列是二级非唯一索引，RC隔离级别</h3><p>若id列上有非唯一索引，那么对应的所有满足SQL查询条件的记录，都会被加锁。同时，这些记录在主键索引上的记录，也会被加锁<br><img src="/asset/article/20200601/3.png" alt="image"></p>
+<h3 id="id列上没有索引，RC隔离级别"><a href="#id列上没有索引，RC隔离级别" class="headerlink" title="id列上没有索引，RC隔离级别"></a>id列上没有索引，RC隔离级别</h3><p>若id列上没有索引，SQL会走聚簇索引的全扫描进行过滤，由于过滤是由MySQL Server层面进行的。因此每条记录，无论是否满足条件，都会被加上X锁。但是，为了效率考量，MySQL做了优化，对于不满足条件的记录，会在判断后放锁，最终持有的，是满足条件的记录上的锁，但是不满足条件的记录上的加锁/放锁动作不会省略<br><img src="/asset/article/20200601/4.png" alt="image"></p>
+<h3 id="id列是主键，RR隔离级别"><a href="#id列是主键，RR隔离级别" class="headerlink" title="id列是主键，RR隔离级别"></a>id列是主键，RR隔离级别</h3><p>同RC</p>
+<h3 id="id列是二级唯一索引，RR隔离级别"><a href="#id列是二级唯一索引，RR隔离级别" class="headerlink" title="id列是二级唯一索引，RR隔离级别"></a>id列是二级唯一索引，RR隔离级别</h3><p>同RC</p>
+<h3 id="id列是二级非唯一索引，RR隔离级别"><a href="#id列是二级非唯一索引，RR隔离级别" class="headerlink" title="id列是二级非唯一索引，RR隔离级别"></a>id列是二级非唯一索引，RR隔离级别</h3><p>Repeatable Read隔离级别下，id列上有一个非唯一索引，对应SQL：delete from t1 where id = 10; 首先，通过id索引定位到第一条满足查询条件的记录，加记录上的X锁，加GAP上的GAP锁，然后加主键聚簇索引上的记录X锁，然后返回；然后读取下一条，重复进行。直至进行到第一条不满足条件的记录[11,f]，此时，不需要加记录X锁，但是仍旧需要加GAP锁，最后返回结束<br><img src="/asset/article/20200601/5.png" alt="image"><br>RR隔离级别，相对于RC隔离级别，不会出现幻读的关键,其实就是这个多出来的GAP锁。<br>考虑到B+树索引的有序性，满足条件的项一定是连续存放的。记录[6,c]之前，不会插入id=10的记录；[6,c]与[10,b]间可以插入[10, aa]；[10,b]与[10,d]间，可以插入新的[10,bb],[10,c]等；[10,d]与[11,f]间可以插入满足条件的[10,e],[10,z]等；而[11,f]之后也不会插入满足条件的记录。因此，为了保证[6,c]与[10,b]间，[10,b]与[10,d]间，[10,d]与[11,f]不会插入新的满足条件的记录，MySQL选择了用GAP锁，将这三个GAP给锁起来。<br>而组合五，id是主键；组合六，id是unique键，都能够保证唯一性。一个等值查询，最多只能返回一条记录，而且新的相同取值的记录，一定不会在新插入进来，因此也就避免了GAP锁的使用。<br>在这种情况下，这个表上，除了不加锁的快照度，其他任何加锁的并发SQL，均不能执行，不能更新，不能删除，不能插入，全表被锁死。</p>
+<h3 id="id列上没有索引，RR隔离级别"><a href="#id列上没有索引，RR隔离级别" class="headerlink" title="id列上没有索引，RR隔离级别"></a>id列上没有索引，RR隔离级别</h3><p>在这种情况下，这个表上，除了不加锁的快照度，其他任何加锁的并发SQL，均不能执行，不能更新，不能删除，不能插入，全表被锁死<br><img src="/asset/article/20200601/6.png" alt="image"></p>
+<h3 id="Serializable隔离级别"><a href="#Serializable隔离级别" class="headerlink" title="Serializable隔离级别"></a>Serializable隔离级别</h3><p>Serializable隔离级别，影响的是SQL1：select * from t1 where id = 10; 这条SQL，在RC，RR隔离级别下，都是快照读，不加锁。但是在Serializable隔离级别，SQL1会加读锁，也就是说快照读不复存在，MVCC并发控制降级为Lock-Based CC</p>
+<h2 id="一条复杂的sql"><a href="#一条复杂的sql" class="headerlink" title="一条复杂的sql"></a>一条复杂的sql</h2><p><img src="/asset/article/20200601/7.png" alt="image"></p>
+<ul>
+<li><strong>Index key：</strong> pubtime &gt; 1 and puptime &lt; 20。此条件，用于确定SQL在idx_t1_pu索引上的查询范围。</li>
+<li><strong>Index Filter：</strong> userid = ‘hdc’ 。此条件，可以在idx_t1_pu索引上进行过滤，但不属于Index Key。</li>
+<li><strong>Table Filter：</strong> comment is not NULL。此条件，在idx_t1_pu索引上无法过滤，只能在聚簇索引上过滤。</li>
+</ul>
+<p><strong>在Repeatable Read隔离级别下，针对一个复杂的SQL，首先需要提取其where条件。Index Key确定的范围，需要加上GAP锁；Index Filter过滤条件，视MySQL版本是否支持ICP，若支持ICP，则不满足Index Filter的记录，不加X锁，否则需要X锁；Table Filter过滤条件，无论是否满足，都需要加X锁</strong><br><img src="/asset/article/20200601/8.png" alt="image"></p>
+<p>【相关文献】<br><a href="https://www.jianshu.com/p/7c5dae9e40ea" target="_blank" rel="external">https://www.jianshu.com/p/7c5dae9e40ea</a><br><a href="https://www.cnblogs.com/knowledgesea/p/3714417.html" target="_blank" rel="external">https://www.cnblogs.com/knowledgesea/p/3714417.html</a><br><a href="https://www.cnblogs.com/youngdeng/p/12857007.html" target="_blank" rel="external">https://www.cnblogs.com/youngdeng/p/12857007.html</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/sql/" rel="tag"># sql</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/05/27/hexo添加可爱的live2D/" rel="next" title="hexo添加可爱的live2D">
+                <i class="fa fa-chevron-left"></i> hexo添加可爱的live2D
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/06/01/mybatis文章汇总/" rel="prev" title="mybatis文章汇总">
+                mybatis文章汇总 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/asset/blogImg/blogUser.jpg"
+               alt="Mr. Xu" />
+          <p class="site-author-name" itemprop="name">Mr. Xu</p>
+          <p class="site-description motion-element" itemprop="description">记录自己平时的小槽点，<br>不扯天马行空的大道理。</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">43</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+
+          <!-- 网易云音乐插件 -->
+          <div class="links-of-author motion-element">
+            <iframe frameborder="no" border="0" marginwidth="0" marginheight="20" width=530 height=86 src="//music.163.com/outchain/player?type=2&id=694286&auto=1&height=66"></iframe>
+         </div> 
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#多用户操作的数据问题"><span class="nav-number">1.</span> <span class="nav-text">多用户操作的数据问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sql锁分类"><span class="nav-number">2.</span> <span class="nav-text">sql锁分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事务隔离级别"><span class="nav-number">3.</span> <span class="nav-text">事务隔离级别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#判断加锁的前置条件"><span class="nav-number">4.</span> <span class="nav-text">判断加锁的前置条件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#判断加锁示例"><span class="nav-number">5.</span> <span class="nav-text">判断加锁示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#id列是主键，RC隔离级别"><span class="nav-number">5.1.</span> <span class="nav-text">id列是主键，RC隔离级别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#id列是二级唯一索引，RC隔离级别"><span class="nav-number">5.2.</span> <span class="nav-text">id列是二级唯一索引，RC隔离级别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#id列是二级非唯一索引，RC隔离级别"><span class="nav-number">5.3.</span> <span class="nav-text">id列是二级非唯一索引，RC隔离级别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#id列上没有索引，RC隔离级别"><span class="nav-number">5.4.</span> <span class="nav-text">id列上没有索引，RC隔离级别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#id列是主键，RR隔离级别"><span class="nav-number">5.5.</span> <span class="nav-text">id列是主键，RR隔离级别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#id列是二级唯一索引，RR隔离级别"><span class="nav-number">5.6.</span> <span class="nav-text">id列是二级唯一索引，RR隔离级别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#id列是二级非唯一索引，RR隔离级别"><span class="nav-number">5.7.</span> <span class="nav-text">id列是二级非唯一索引，RR隔离级别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#id列上没有索引，RR隔离级别"><span class="nav-number">5.8.</span> <span class="nav-text">id列上没有索引，RR隔离级别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Serializable隔离级别"><span class="nav-number">5.9.</span> <span class="nav-text">Serializable隔离级别</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一条复杂的sql"><span class="nav-number">6.</span> <span class="nav-text">一条复杂的sql</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mr. Xu</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/assets/shizuku.model.json"},"display":{"position":"left","width":300,"height":600,"opacity":0.4},"mobile":{"show":true},"log":false});</script></body>
+</html>
