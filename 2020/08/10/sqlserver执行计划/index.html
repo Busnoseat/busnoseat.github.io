@@ -1,0 +1,728 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="sql," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="怎么看执行计划图形化执行计划是从上到下从右到左看的。
+
+ 要看有没有走索引 
+ 输入对象是什么索引  
+ 输出对象是哪些出参  
+ 查询结果行数为多少  
+
+连线
+
+越粗表示扫描影响的行数愈多。
+Actual Number of Rows   扫描中实际影响的的行数  。
+Estimated Number of Rows  预估扫描影响的行数 。
+Estimated row size 操作符生成">
+<meta property="og:type" content="article">
+<meta property="og:title" content="sqlserver执行计划">
+<meta property="og:url" content="http://yoursite.com/2020/08/10/sqlserver执行计划/index.html">
+<meta property="og:site_name" content="学习是件开心事">
+<meta property="og:description" content="怎么看执行计划图形化执行计划是从上到下从右到左看的。
+
+ 要看有没有走索引 
+ 输入对象是什么索引  
+ 输出对象是哪些出参  
+ 查询结果行数为多少  
+
+连线
+
+越粗表示扫描影响的行数愈多。
+Actual Number of Rows   扫描中实际影响的的行数  。
+Estimated Number of Rows  预估扫描影响的行数 。
+Estimated row size 操作符生成">
+<meta property="og:image" content="http://yoursite.com/asset/article/20200810/1.jpg">
+<meta property="og:image" content="http://yoursite.com/asset/article/20200810/2.jpg">
+<meta property="og:image" content="http://yoursite.com/asset/article/20200810/3.jpg">
+<meta property="og:image" content="http://yoursite.com/asset/article/20200810/4.jpg">
+<meta property="og:image" content="http://yoursite.com/asset/article/20200810/5.jpg">
+<meta property="og:image" content="http://yoursite.com/asset/article/20200810/6.jpg">
+<meta property="og:image" content="http://yoursite.com/asset/article/20200810/7.jpg">
+<meta property="og:image" content="http://yoursite.com/asset/article/20200810/8.jpg">
+<meta property="og:image" content="http://yoursite.com/asset/article/20200810/9.png">
+<meta property="og:image" content="http://yoursite.com/asset/article/20200810/10.png">
+<meta property="og:updated_time" content="2020-08-10T15:58:37.941Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="sqlserver执行计划">
+<meta name="twitter:description" content="怎么看执行计划图形化执行计划是从上到下从右到左看的。
+
+ 要看有没有走索引 
+ 输入对象是什么索引  
+ 输出对象是哪些出参  
+ 查询结果行数为多少  
+
+连线
+
+越粗表示扫描影响的行数愈多。
+Actual Number of Rows   扫描中实际影响的的行数  。
+Estimated Number of Rows  预估扫描影响的行数 。
+Estimated row size 操作符生成">
+<meta name="twitter:image" content="http://yoursite.com/asset/article/20200810/1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/08/10/sqlserver执行计划/"/>
+
+
+
+
+
+  <title> sqlserver执行计划 | 学习是件开心事 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">学习是件开心事</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/10/sqlserver执行计划/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Mr. Xu">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/asset/blogImg/blogUser.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="学习是件开心事">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="学习是件开心事" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                sqlserver执行计划
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-08-10T17:01:58+08:00">
+                2020-08-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <a id="more"></a>
+<h2 id="怎么看执行计划"><a href="#怎么看执行计划" class="headerlink" title="怎么看执行计划"></a>怎么看执行计划</h2><p>图形化执行计划是从上到下从右到左看的。</p>
+<ul>
+<li><strong> 要看有没有走索引 </strong></li>
+<li><strong> 输入对象是什么索引 </strong> </li>
+<li><strong> 输出对象是哪些出参 </strong> </li>
+<li><strong> 查询结果行数为多少 </strong> </li>
+</ul>
+<h3 id="连线"><a href="#连线" class="headerlink" title="连线"></a>连线</h3><p><img src="/asset/article/20200810/1.jpg" alt="image"></p>
+<ul>
+<li>越粗表示扫描影响的行数愈多。</li>
+<li>Actual Number of Rows  <strong> 扫描中实际影响的的行数 </strong> 。</li>
+<li>Estimated Number of Rows <strong> 预估扫描影响的行数 </strong>。</li>
+<li>Estimated row size 操作符生成的行的估计大小（字节）。</li>
+<li>Estimated Data Size 预估影响的数据的大小。</li>
+</ul>
+<h3 id="当前步骤执行信息"><a href="#当前步骤执行信息" class="headerlink" title="当前步骤执行信息"></a>当前步骤执行信息</h3><p><img src="/asset/article/20200810/2.jpg" alt="image"><br>这个tips的信息告诉我们<strong> 执行的对象是什么 </strong>，<strong> 输出的是哪些对象</strong>，采用的操作是什么，查找的数据是什么，使用的索引是什么，排序与否，预估cpu、I/O、影响行数，实际行数等信息</p>
+<h2 id="索引分类"><a href="#索引分类" class="headerlink" title="索引分类"></a>索引分类</h2><h3 id="Table-Scan（表扫描）"><a href="#Table-Scan（表扫描）" class="headerlink" title="Table Scan（表扫描）"></a>Table Scan（表扫描）</h3><p><img src="/asset/article/20200810/3.jpg" alt="image"><br>当表中没有聚集索引，又没有合适索引的情况下，会出现这个操作。这个操作是很耗性能的，他的出现也意味着优化器要遍历整张表去查找你所需要的数据。</p>
+<h3 id="Clustered-Index-Scan-聚集索引扫描-、Index-Scan（非聚集索引扫描）"><a href="#Clustered-Index-Scan-聚集索引扫描-、Index-Scan（非聚集索引扫描）" class="headerlink" title="Clustered Index Scan(聚集索引扫描)、Index Scan（非聚集索引扫描）"></a>Clustered Index Scan(聚集索引扫描)、Index Scan（非聚集索引扫描）</h3><p><img src="/asset/article/20200810/4.jpg" alt="image"></p>
+<ul>
+<li><p>聚集索引扫描：聚集索引的数据体积实际是就是表本身，也就是说表有多少行多少列，聚集所有就有多少行多少列，那么聚集索引扫描就跟表扫描差不多，也要进行全表扫描，遍历所有表数据，查找出你想要的数据</p>
+</li>
+<li><p>非聚集索引扫描: 非聚集索引的体积是根据你的索引创建情况而定的，可以只包含你要查询的列。那么进行非聚集索引扫描，便是你非聚集中包含的列的所有行进行遍历，查找出你想要的数据。</p>
+</li>
+</ul>
+<h3 id="Key-Lookup-键值查找"><a href="#Key-Lookup-键值查找" class="headerlink" title="Key Lookup(键值查找)"></a>Key Lookup(键值查找)</h3><p><img src="/asset/article/20200810/5.jpg" alt="image"><br>首先需要说的是查找，查找与扫描在性能上完全不是一个级别的，扫描需要遍历整张表，而查找只需要通过键值直接提取数据，返回结果，性能要好。<br>当你查找的列没有完全被非聚集索引包含，就需要使用键值查找在聚集索引上查找非聚集索引不包含的列</p>
+<h3 id="RID-Lookoup（RID查找"><a href="#RID-Lookoup（RID查找" class="headerlink" title="RID Lookoup（RID查找)"></a>RID Lookoup（RID查找)</h3><p><img src="/asset/article/20200810/6.jpg" alt="image"><br>跟键值查找类似，只不过RID查找，是需要查找的列没有完全被非聚集索引包含，而剩余的列所在的表又不存在聚集索引，不能键值查找，只能根据行表示Rid来查询数据。</p>
+<h3 id="Clustered-Index-Seek（聚集索引查找）、Index-Seek（非聚集索引查找）"><a href="#Clustered-Index-Seek（聚集索引查找）、Index-Seek（非聚集索引查找）" class="headerlink" title="Clustered Index Seek（聚集索引查找）、Index Seek（非聚集索引查找）"></a>Clustered Index Seek（聚集索引查找）、Index Seek（非聚集索引查找）</h3><p><img src="/asset/article/20200810/7.jpg" alt="image"></p>
+<ul>
+<li><p>聚集索引查找：聚集索引包含整个表的数据，也就是在聚集索引的数据上根据键值取数据。</p>
+</li>
+<li><p>非聚集索引查找: 非聚集索引包含创建索引时所包含列的数据，在这些非聚集索引的数据上根据键值取数据。</p>
+</li>
+</ul>
+<h3 id="Hash-Match"><a href="#Hash-Match" class="headerlink" title="Hash Match"></a>Hash Match</h3><p><img src="/asset/article/20200810/8.jpg" alt="image"></p>
+<ul>
+<li>Hashing：在数据库中根据每一行的数据内容，转换成唯一符号格式，存放到临时哈希表中，当需要原始数据时，可以给还原回来。类似加密解密技术，但是他能更有效的支持数据查询。</li>
+<li>Hash Table：通过hashing处理，把数据以key/value的形式存储在表格中，在数据库中他被放在tempdb中。</li>
+<li>Hash Match: 会把其中较小的数据集，通过Hashing运算放入HashTable中，然后一行一行的遍历较大的数据集与HashTable进行相应的匹配拉取数据</li>
+</ul>
+<h3 id="Nested-Loops"><a href="#Nested-Loops" class="headerlink" title="Nested Loops"></a>Nested Loops</h3><p><img src="/asset/article/20200810/9.png" alt="image"><br>把两个不同列的数据集汇总到一张表中。提示信息中的Output List中有两个数据集，下面的数据集（inner set）会一一扫描与上面的数据集（out<br>set），知道扫描完为止，这个操作才算是完成</p>
+<h3 id="Merge-Join"><a href="#Merge-Join" class="headerlink" title="Merge Join"></a>Merge Join</h3><p><img src="/asset/article/20200810/10.png" alt="image"><br>这种关联算法是对两个已经排过序的集合进行合并。如果两个聚合是无序的则将先给集合排序再进行一一合并，由于是排过序的集合，左右两个集合自上而下合并效率是相当快的</p>
+<h2 id="清除缓存的执行计划"><a href="#清除缓存的执行计划" class="headerlink" title="清除缓存的执行计划"></a>清除缓存的执行计划</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">dbcc freeprocache</div><div class="line">dbcc flushprocindb（db_id）</div></pre></td></tr></table></figure>
+<h2 id="优化建议"><a href="#优化建议" class="headerlink" title="优化建议"></a>优化建议</h2><p>优化的目的是为了尽可能走index seek，杜绝index scan，完全禁止table scan。如果需要关联查询，尽可能的走Nested join,杜绝Hash Match和Merge join</p>
+<ul>
+<li>select * 通常情况下聚集索引会比非聚集索引更优</li>
+<li>如果出现Nested Loops，需要查下是否需要聚集索引，非聚集索引是否可以包含所有需要的列</li>
+<li>Hash Match连接操作更适合于需要做Hashing算法集合很小的连接</li>
+<li>Merge Join时需要检查下原有的集合是否已经有排序，如果没有排序，使用索引能否解决</li>
+<li>出现表扫描，聚集索引扫描，非聚集索引扫描时，考虑语句是否可以加where限制，select * 是否可以去除不必要的列</li>
+<li>出现Rid查找时，是否可以加索引优化解决</li>
+<li>在计划中看到不是你想要的索引时，看能否在语句中强制使用你想用的索引解决问题，强制使用索引的办法Select CluName1,CluName2 from Table with(index=IndexName)</li>
+<li>看到不是你想要的连接算法时，尝试强制使用你想要的算法解决问题。强制使用连接算法的语句：select * from t1 left join t2 on t1.id=t2.id option(Hash/Loop/Merge Join)</li>
+<li>看到不是你想要的聚合算法是，尝试强制使用你想要的聚合算法。强制使用聚合算法的语句示例：select  age ,count(age) as cnt from t1 group by age  option(order/hash group)</li>
+<li>看到不是你想要的解析执行顺序是，或这解析顺序耗时过大时，尝试强制使用你定的执行顺序。option（force order）</li>
+<li>看到有多个线程来合并执行你的sql语句而影响到性能时，尝试强制是不并行操作。option（maxdop 1）</li>
+<li>不操作多余的列，多余的行，不做无必要的聚合，排序</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/sql/" rel="tag"># sql</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/07/28/jvm内存模型/" rel="next" title="jvm内存模型">
+                <i class="fa fa-chevron-left"></i> jvm内存模型
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/asset/blogImg/blogUser.jpg"
+               alt="Mr. Xu" />
+          <p class="site-author-name" itemprop="name">Mr. Xu</p>
+          <p class="site-description motion-element" itemprop="description">记录自己平时的小槽点，<br>不扯天马行空的大道理。</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">48</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+
+          <!-- 网易云音乐插件 -->
+          <div class="links-of-author motion-element">
+            <iframe frameborder="no" border="0" marginwidth="0" marginheight="20" width=530 height=86 src="//music.163.com/outchain/player?type=2&id=694286&auto=1&height=66"></iframe>
+         </div> 
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#怎么看执行计划"><span class="nav-number">1.</span> <span class="nav-text">怎么看执行计划</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#连线"><span class="nav-number">1.1.</span> <span class="nav-text">连线</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#当前步骤执行信息"><span class="nav-number">1.2.</span> <span class="nav-text">当前步骤执行信息</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引分类"><span class="nav-number">2.</span> <span class="nav-text">索引分类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Table-Scan（表扫描）"><span class="nav-number">2.1.</span> <span class="nav-text">Table Scan（表扫描）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Clustered-Index-Scan-聚集索引扫描-、Index-Scan（非聚集索引扫描）"><span class="nav-number">2.2.</span> <span class="nav-text">Clustered Index Scan(聚集索引扫描)、Index Scan（非聚集索引扫描）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Key-Lookup-键值查找"><span class="nav-number">2.3.</span> <span class="nav-text">Key Lookup(键值查找)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RID-Lookoup（RID查找"><span class="nav-number">2.4.</span> <span class="nav-text">RID Lookoup（RID查找)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Clustered-Index-Seek（聚集索引查找）、Index-Seek（非聚集索引查找）"><span class="nav-number">2.5.</span> <span class="nav-text">Clustered Index Seek（聚集索引查找）、Index Seek（非聚集索引查找）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hash-Match"><span class="nav-number">2.6.</span> <span class="nav-text">Hash Match</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Nested-Loops"><span class="nav-number">2.7.</span> <span class="nav-text">Nested Loops</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Merge-Join"><span class="nav-number">2.8.</span> <span class="nav-text">Merge Join</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#清除缓存的执行计划"><span class="nav-number">3.</span> <span class="nav-text">清除缓存的执行计划</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化建议"><span class="nav-number">4.</span> <span class="nav-text">优化建议</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mr. Xu</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/assets/shizuku.model.json"},"display":{"position":"left","width":200,"height":400,"opacity":0.4},"mobile":{"show":false},"log":false});</script></body>
+</html>
